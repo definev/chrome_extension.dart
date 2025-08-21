@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'src/internal_helpers.dart';
 import 'src/js/system_storage.dart' as $js;
 import 'system.dart';
@@ -29,41 +28,52 @@ class ChromeSystemStorage {
   /// Get the storage information from the system. The argument passed to the
   /// callback is an array of StorageUnitInfo objects.
   Future<List<StorageUnitInfo>> getInfo() async {
-    var $res =
-        await promiseToFuture<JSArray>($js.chrome.system.storage.getInfo());
-    return $res.toDart
-        .cast<$js.StorageUnitInfo>()
-        .map((e) => StorageUnitInfo.fromJS(e))
-        .toList();
+    var $res = await $js.chrome.system.storage.getInfo().toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.StorageUnitInfo>()
+          .map((e) => StorageUnitInfo.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Ejects a removable storage device.
   Future<EjectDeviceResultCode> ejectDevice(String id) async {
-    var $res = await promiseToFuture<$js.EjectDeviceResultCode>(
-        $js.chrome.system.storage.ejectDevice(id));
-    return EjectDeviceResultCode.fromJS($res);
+    var $res = await $js.chrome.system.storage.ejectDevice(id).toDart;
+    if ($res != null && $res.isA<$js.EjectDeviceResultCode>()) {
+      return EjectDeviceResultCode.fromJS($res as $js.EjectDeviceResultCode);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Get the available capacity of a specified |id| storage device.
   /// The |id| is the transient device ID from StorageUnitInfo.
   Future<StorageAvailableCapacityInfo> getAvailableCapacity(String id) async {
-    var $res = await promiseToFuture<$js.StorageAvailableCapacityInfo>(
-        $js.chrome.system.storage.getAvailableCapacity(id));
-    return StorageAvailableCapacityInfo.fromJS($res);
+    var $res = await $js.chrome.system.storage.getAvailableCapacity(id).toDart;
+    if ($res != null && $res.isA<$js.StorageAvailableCapacityInfo>()) {
+      return StorageAvailableCapacityInfo.fromJS(
+          $res as $js.StorageAvailableCapacityInfo);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Fired when a new removable storage is attached to the system.
   EventStream<StorageUnitInfo> get onAttached =>
-      $js.chrome.system.storage.onAttached
-          .asStream(($c) => ($js.StorageUnitInfo info) {
-                return $c(StorageUnitInfo.fromJS(info));
-              }.toJS);
+      $js.chrome.system.storage.onAttached.asStream(
+        ($c) => ($js.StorageUnitInfo info) {
+          return $c(StorageUnitInfo.fromJS(info));
+        }.toJS,
+      );
 
   /// Fired when a removable storage is detached from the system.
   EventStream<String> get onDetached =>
-      $js.chrome.system.storage.onDetached.asStream(($c) => (String id) {
-            return $c(id);
-          }.toJS);
+      $js.chrome.system.storage.onDetached.asStream(
+        ($c) => (String id) {
+          return $c(id);
+        }.toJS,
+      );
 }
 
 enum StorageUnitType {

@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'src/internal_helpers.dart';
 import 'src/js/debugger.dart' as $js;
 
@@ -35,14 +34,8 @@ class ChromeDebugger {
   /// [returns] Called once the attach operation succeeds or fails. Callback
   /// receives no arguments. If the attach fails, [runtime.lastError] will be
   /// set to the error message.
-  Future<void> attach(
-    Debuggee target,
-    String requiredVersion,
-  ) async {
-    await promiseToFuture<void>($js.chrome.debugger.attach(
-      target.toJS,
-      requiredVersion,
-    ));
+  Future<void> attach(Debuggee target, String requiredVersion) async {
+    await $js.chrome.debugger.attach(target.toJS, requiredVersion).toDart;
   }
 
   /// Detaches debugger from the given target.
@@ -51,7 +44,7 @@ class ChromeDebugger {
   /// receives no arguments. If the detach fails, [runtime.lastError] will be
   /// set to the error message.
   Future<void> detach(Debuggee target) async {
-    await promiseToFuture<void>($js.chrome.debugger.detach(target.toJS));
+    await $js.chrome.debugger.detach(target.toJS).toDart;
   }
 
   /// Sends given command to the debugging target.
@@ -69,50 +62,57 @@ class ChromeDebugger {
     String method,
     Map? commandParams,
   ) async {
-    var $res = await promiseToFuture<JSAny?>($js.chrome.debugger.sendCommand(
-      target.toJS,
-      method,
-      commandParams?.jsify(),
-    ));
-    return $res?.toDartMap();
+    var $res = await $js.chrome.debugger
+        .sendCommand(
+          target.toJS,
+          method,
+          commandParams?.jsify(),
+        )
+        .toDart;
+    if ($res == null) return null;
+    return ($res as JSAny).toDartMap();
   }
 
   /// Returns the list of available debug targets.
   Future<List<TargetInfo>> getTargets() async {
-    var $res = await promiseToFuture<JSArray>($js.chrome.debugger.getTargets());
-    return $res.toDart
-        .cast<$js.TargetInfo>()
-        .map((e) => TargetInfo.fromJS(e))
-        .toList();
+    var $res = await $js.chrome.debugger.getTargets().toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.TargetInfo>()
+          .map((e) => TargetInfo.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Fired whenever debugging target issues instrumentation event.
-  EventStream<OnEventEvent> get onEvent =>
-      $js.chrome.debugger.onEvent.asStream(($c) => (
-            $js.Debuggee source,
-            String method,
-            JSAny? params,
-          ) {
-            return $c(OnEventEvent(
+  EventStream<OnEventEvent> get onEvent => $js.chrome.debugger.onEvent.asStream(
+        ($c) => ($js.Debuggee source, String method, JSAny? params) {
+          return $c(
+            OnEventEvent(
               source: Debuggee.fromJS(source),
               method: method,
               params: params?.toDartMap(),
-            ));
-          }.toJS);
+            ),
+          );
+        }.toJS,
+      );
 
   /// Fired when browser terminates debugging session for the tab. This happens
   /// when either the tab is being closed or Chrome DevTools is being invoked
   /// for the attached tab.
   EventStream<OnDetachEvent> get onDetach =>
-      $js.chrome.debugger.onDetach.asStream(($c) => (
-            $js.Debuggee source,
-            $js.DetachReason reason,
-          ) {
-            return $c(OnDetachEvent(
+      $js.chrome.debugger.onDetach.asStream(
+        ($c) => ($js.Debuggee source, $js.DetachReason reason) {
+          return $c(
+            OnDetachEvent(
               source: Debuggee.fromJS(source),
               reason: DetachReason.fromJS(reason),
-            ));
-          }.toJS);
+            ),
+          );
+        }.toJS,
+      );
 }
 
 /// Target type.
@@ -318,10 +318,7 @@ class OnEventEvent {
 }
 
 class OnDetachEvent {
-  OnDetachEvent({
-    required this.source,
-    required this.reason,
-  });
+  OnDetachEvent({required this.source, required this.reason});
 
   /// The debuggee that was detached.
   final Debuggee source;

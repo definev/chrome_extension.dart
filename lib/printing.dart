@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'printer_provider.dart';
 import 'src/internal_helpers.dart';
 import 'src/js/printing.dart' as $js;
@@ -29,27 +28,32 @@ class ChromePrinting {
   /// the user is prompted to accept the print job.<br/>
   /// Before Chrome 120, this function did not return a promise.
   Future<SubmitJobResponse> submitJob(SubmitJobRequest request) async {
-    var $res = await promiseToFuture<$js.SubmitJobResponse>(
-        $js.chrome.printing.submitJob(request.toJS));
-    return SubmitJobResponse.fromJS($res);
+    var $res = await $js.chrome.printing.submitJob(request.toJS).toDart;
+    if ($res != null && $res.isA<$js.SubmitJobResponse>()) {
+      return SubmitJobResponse.fromJS($res as $js.SubmitJobResponse);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Cancels previously submitted job.
   /// |jobId|: The id of the print job to cancel. This should be the same id
   /// received in a [SubmitJobResponse].
   Future<void> cancelJob(String jobId) async {
-    await promiseToFuture<void>($js.chrome.printing.cancelJob(jobId));
+    await $js.chrome.printing.cancelJob(jobId).toDart;
   }
 
   /// Returns the list of available printers on the device. This includes
   /// manually added, enterprise and discovered printers.
   Future<List<Printer>> getPrinters() async {
-    var $res =
-        await promiseToFuture<JSArray>($js.chrome.printing.getPrinters());
-    return $res.toDart
-        .cast<$js.Printer>()
-        .map((e) => Printer.fromJS(e))
-        .toList();
+    var $res = await $js.chrome.printing.getPrinters().toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.Printer>()
+          .map((e) => Printer.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Returns the status and capabilities of the printer in
@@ -58,9 +62,11 @@ class ChromePrinting {
   /// This call will fail with a runtime error if no printers with given id are
   /// installed.
   Future<GetPrinterInfoResponse> getPrinterInfo(String printerId) async {
-    var $res = await promiseToFuture<$js.GetPrinterInfoResponse>(
-        $js.chrome.printing.getPrinterInfo(printerId));
-    return GetPrinterInfoResponse.fromJS($res);
+    var $res = await $js.chrome.printing.getPrinterInfo(printerId).toDart;
+    if ($res != null && $res.isA<$js.GetPrinterInfoResponse>()) {
+      return GetPrinterInfoResponse.fromJS($res as $js.GetPrinterInfoResponse);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// The maximum number of times that [submitJob] can be called per
@@ -76,15 +82,16 @@ class ChromePrinting {
   /// Event fired when the status of the job is changed.
   /// This is only fired for the jobs created by this extension.
   EventStream<OnJobStatusChangedEvent> get onJobStatusChanged =>
-      $js.chrome.printing.onJobStatusChanged.asStream(($c) => (
-            String jobId,
-            $js.JobStatus status,
-          ) {
-            return $c(OnJobStatusChangedEvent(
+      $js.chrome.printing.onJobStatusChanged.asStream(
+        ($c) => (String jobId, $js.JobStatus status) {
+          return $c(
+            OnJobStatusChangedEvent(
               jobId: jobId,
               status: JobStatus.fromJS(status),
-            ));
-          }.toJS);
+            ),
+          );
+        }.toJS,
+      );
 }
 
 /// The status of [submitJob] request.
@@ -258,10 +265,7 @@ class SubmitJobResponse {
     /// The id of created print job. This is a unique identifier among all print
     /// jobs on the device. If status is not OK, jobId will be null.
     String? jobId,
-  }) : _wrapped = $js.SubmitJobResponse(
-          status: status.toJS,
-          jobId: jobId,
-        );
+  }) : _wrapped = $js.SubmitJobResponse(status: status.toJS, jobId: jobId);
 
   final $js.SubmitJobResponse _wrapped;
 
@@ -430,10 +434,7 @@ class GetPrinterInfoResponse {
 }
 
 class OnJobStatusChangedEvent {
-  OnJobStatusChangedEvent({
-    required this.jobId,
-    required this.status,
-  });
+  OnJobStatusChangedEvent({required this.jobId, required this.status});
 
   final String jobId;
 

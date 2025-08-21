@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'printing.dart';
 import 'src/internal_helpers.dart';
 import 'src/js/printing_metrics.dart' as $js;
@@ -25,21 +24,25 @@ class ChromePrintingMetrics {
 
   /// Returns the list of the finished print jobs.
   Future<List<PrintJobInfo>> getPrintJobs() async {
-    var $res = await promiseToFuture<JSArray>(
-        $js.chrome.printingMetrics.getPrintJobs());
-    return $res.toDart
-        .cast<$js.PrintJobInfo>()
-        .map((e) => PrintJobInfo.fromJS(e))
-        .toList();
+    var $res = await $js.chrome.printingMetrics.getPrintJobs().toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.PrintJobInfo>()
+          .map((e) => PrintJobInfo.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Event fired when the print job is finished.
   /// This includes any of termination statuses: FAILED, CANCELED and PRINTED.
   EventStream<PrintJobInfo> get onPrintJobFinished =>
-      $js.chrome.printingMetrics.onPrintJobFinished
-          .asStream(($c) => ($js.PrintJobInfo jobInfo) {
-                return $c(PrintJobInfo.fromJS(jobInfo));
-              }.toJS);
+      $js.chrome.printingMetrics.onPrintJobFinished.asStream(
+        ($c) => ($js.PrintJobInfo jobInfo) {
+          return $c(PrintJobInfo.fromJS(jobInfo));
+        }.toJS,
+      );
 }
 
 /// The source of the print job.
@@ -268,11 +271,7 @@ class Printer {
 
     /// The source of the printer.
     required PrinterSource source,
-  }) : _wrapped = $js.Printer(
-          name: name,
-          uri: uri,
-          source: source.toJS,
-        );
+  }) : _wrapped = $js.Printer(name: name, uri: uri, source: source.toJS);
 
   final $js.Printer _wrapped;
 

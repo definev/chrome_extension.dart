@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'src/internal_helpers.dart';
 import 'src/js/omnibox.dart' as $js;
 
@@ -24,10 +23,7 @@ class ChromeOmnibox {
   /// A callback passed to the onInputChanged event used for sending suggestions
   /// back to the browser.
   /// [suggestResults] An array of suggest results
-  void sendSuggestions(
-    int requestId,
-    List<SuggestResult> suggestResults,
-  ) {
+  void sendSuggestions(int requestId, List<SuggestResult> suggestResults) {
     $js.chrome.omnibox.sendSuggestions(
       requestId,
       suggestResults.toJSArray((e) => e.toJS),
@@ -40,53 +36,55 @@ class ChromeOmnibox {
   /// [suggestion] A partial SuggestResult object, without the 'content'
   /// parameter.
   Future<void> setDefaultSuggestion(DefaultSuggestResult suggestion) async {
-    await promiseToFuture<void>(
-        $js.chrome.omnibox.setDefaultSuggestion(suggestion.toJS));
+    await $js.chrome.omnibox.setDefaultSuggestion(suggestion.toJS).toDart;
   }
 
   /// User has started a keyword input session by typing the extension's
   /// keyword. This is guaranteed to be sent exactly once per input session, and
   /// before any onInputChanged events.
   EventStream<void> get onInputStarted =>
-      $js.chrome.omnibox.onInputStarted.asStream(($c) => () {
-            return $c(null);
-          }.toJS);
+      $js.chrome.omnibox.onInputStarted.asStream(
+        ($c) => () {
+          return $c(null);
+        }.toJS,
+      );
 
   /// User has changed what is typed into the omnibox.
   EventStream<OnInputChangedEvent> get onInputChanged =>
-      $js.chrome.omnibox.onInputChanged.asStream(($c) => (
-            String text,
-            JSFunction suggest,
-          ) {
-            return $c(OnInputChangedEvent(
-              text: text,
-              suggest: suggest,
-            ));
-          }.toJS);
+      $js.chrome.omnibox.onInputChanged.asStream(
+        ($c) => (String text, JSFunction suggest) {
+          return $c(OnInputChangedEvent(text: text, suggest: suggest));
+        }.toJS,
+      );
 
   /// User has accepted what is typed into the omnibox.
   EventStream<OnInputEnteredEvent> get onInputEntered =>
-      $js.chrome.omnibox.onInputEntered.asStream(($c) => (
-            String text,
-            $js.OnInputEnteredDisposition disposition,
-          ) {
-            return $c(OnInputEnteredEvent(
+      $js.chrome.omnibox.onInputEntered.asStream(
+        ($c) => (String text, $js.OnInputEnteredDisposition disposition) {
+          return $c(
+            OnInputEnteredEvent(
               text: text,
               disposition: OnInputEnteredDisposition.fromJS(disposition),
-            ));
-          }.toJS);
+            ),
+          );
+        }.toJS,
+      );
 
   /// User has ended the keyword input session without accepting the input.
   EventStream<void> get onInputCancelled =>
-      $js.chrome.omnibox.onInputCancelled.asStream(($c) => () {
-            return $c(null);
-          }.toJS);
+      $js.chrome.omnibox.onInputCancelled.asStream(
+        ($c) => () {
+          return $c(null);
+        }.toJS,
+      );
 
   /// User has deleted a suggested result.
   EventStream<String> get onDeleteSuggestion =>
-      $js.chrome.omnibox.onDeleteSuggestion.asStream(($c) => (String text) {
-            return $c(text);
-          }.toJS);
+      $js.chrome.omnibox.onDeleteSuggestion.asStream(
+        ($c) => (String text) {
+          return $c(text);
+        }.toJS,
+      );
 }
 
 /// The style type.
@@ -288,10 +286,7 @@ class DefaultSuggestResult {
 }
 
 class OnInputChangedEvent {
-  OnInputChangedEvent({
-    required this.text,
-    required this.suggest,
-  });
+  OnInputChangedEvent({required this.text, required this.suggest});
 
   final String text;
 
@@ -301,10 +296,7 @@ class OnInputChangedEvent {
 }
 
 class OnInputEnteredEvent {
-  OnInputEnteredEvent({
-    required this.text,
-    required this.disposition,
-  });
+  OnInputEnteredEvent({required this.text, required this.disposition});
 
   final String text;
 

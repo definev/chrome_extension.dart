@@ -81,7 +81,8 @@ extension JSChoiceExtension<T extends JSAny> on T {
 
 extension EventStreamExtension on js.Event {
   EventStream<T> asStream<T>(
-      JSFunction Function(void Function(T)) callbackFactory) {
+    JSFunction Function(void Function(T)) callbackFactory,
+  ) {
     return EventStream<T>(this, callbackFactory);
   }
 }
@@ -93,9 +94,10 @@ class EventStream<T> extends Stream<T> {
   EventStream(this._target, this._callbackFactory);
 
   @override
-  Stream<T> asBroadcastStream(
-          {void Function(StreamSubscription<T>)? onListen,
-          void Function(StreamSubscription<T>)? onCancel}) =>
+  Stream<T> asBroadcastStream({
+    void Function(StreamSubscription<T>)? onListen,
+    void Function(StreamSubscription<T>)? onCancel,
+  }) =>
       this;
 
   @override
@@ -103,8 +105,12 @@ class EventStream<T> extends Stream<T> {
 
   @pragma('dart2js:tryInline')
   @override
-  StreamSubscription<T> listen(dynamic Function(T)? onData,
-          {Function? onError, void Function()? onDone, bool? cancelOnError}) =>
+  StreamSubscription<T> listen(
+    dynamic Function(T)? onData, {
+    Function? onError,
+    void Function()? onDone,
+    bool? cancelOnError,
+  }) =>
       _EventStreamSubscription<T>(this._target, onData, _callbackFactory);
 }
 
@@ -114,8 +120,11 @@ class _EventStreamSubscription<T> implements StreamSubscription<T> {
   dynamic Function(T)? _onData;
   late final JSFunction _callback;
 
-  _EventStreamSubscription(this._target, this._onData,
-      JSFunction Function(dynamic Function(T)) callbackFactory) {
+  _EventStreamSubscription(
+    this._target,
+    this._onData,
+    JSFunction Function(dynamic Function(T)) callbackFactory,
+  ) {
     _callback = callbackFactory(_wrapZone(_addData));
     _tryResume();
   }

@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'src/internal_helpers.dart';
 import 'src/js/system_network.dart' as $js;
 import 'system.dart';
@@ -26,12 +25,15 @@ class ChromeSystemNetwork {
   /// Retrieves information about local adapters on this system.
   /// |callback| : Called when local adapter information is available.
   Future<List<NetworkInterface>> getNetworkInterfaces() async {
-    var $res = await promiseToFuture<JSArray>(
-        $js.chrome.system.network.getNetworkInterfaces());
-    return $res.toDart
-        .cast<$js.NetworkInterface>()
-        .map((e) => NetworkInterface.fromJS(e))
-        .toList();
+    var $res = await $js.chrome.system.network.getNetworkInterfaces().toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.NetworkInterface>()
+          .map((e) => NetworkInterface.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 }
 

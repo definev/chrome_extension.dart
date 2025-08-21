@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'src/internal_helpers.dart';
 import 'src/js/login_state.dart' as $js;
 
@@ -23,25 +22,30 @@ class ChromeLoginState {
 
   /// Gets the type of the profile the extension is in.
   Future<ProfileType> getProfileType() async {
-    var $res = await promiseToFuture<$js.ProfileType>(
-        $js.chrome.loginState.getProfileType());
-    return ProfileType.fromJS($res);
+    var $res = await $js.chrome.loginState.getProfileType().toDart;
+    if ($res != null && $res.isA<$js.ProfileType>()) {
+      return ProfileType.fromJS($res as $js.ProfileType);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Gets the current session state.
   Future<SessionState> getSessionState() async {
-    var $res = await promiseToFuture<$js.SessionState>(
-        $js.chrome.loginState.getSessionState());
-    return SessionState.fromJS($res);
+    var $res = await $js.chrome.loginState.getSessionState().toDart;
+    if ($res != null && $res.isA<$js.SessionState>()) {
+      return SessionState.fromJS($res as $js.SessionState);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Dispatched when the session state changes. `sessionState`
   /// is the new session state.
   EventStream<SessionState> get onSessionStateChanged =>
-      $js.chrome.loginState.onSessionStateChanged
-          .asStream(($c) => ($js.SessionState sessionState) {
-                return $c(SessionState.fromJS(sessionState));
-              }.toJS);
+      $js.chrome.loginState.onSessionStateChanged.asStream(
+        ($c) => ($js.SessionState sessionState) {
+          return $c(SessionState.fromJS(sessionState));
+        }.toJS,
+      );
 }
 
 enum ProfileType {

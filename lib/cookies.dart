@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'src/internal_helpers.dart';
 import 'src/js/cookies.dart' as $js;
 
@@ -26,9 +25,11 @@ class ChromeCookies {
   /// be returned. For cookies with the same path length, the cookie with the
   /// earliest creation time will be returned.
   Future<Cookie?> get(CookieDetails details) async {
-    var $res = await promiseToFuture<$js.Cookie?>(
-        $js.chrome.cookies.get(details.toJS));
-    return $res?.let(Cookie.fromJS);
+    var $res = await $js.chrome.cookies.get(details.toJS).toDart;
+    if ($res != null && $res.isA<$js.Cookie>()) {
+      return Cookie.fromJS($res as $js.Cookie);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Retrieves all cookies from a single cookie store that match the given
@@ -38,35 +39,48 @@ class ChromeCookies {
   /// cookies for domains that the extension has host permissions to.
   /// [details] Information to filter the cookies being retrieved.
   Future<List<Cookie>> getAll(GetAllDetails details) async {
-    var $res =
-        await promiseToFuture<JSArray>($js.chrome.cookies.getAll(details.toJS));
-    return $res.toDart.cast<$js.Cookie>().map((e) => Cookie.fromJS(e)).toList();
+    var $res = await $js.chrome.cookies.getAll(details.toJS).toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.Cookie>()
+          .map((e) => Cookie.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Sets a cookie with the given cookie data; may overwrite equivalent cookies
   /// if they exist.
   /// [details] Details about the cookie being set.
   Future<Cookie?> set(SetDetails details) async {
-    var $res = await promiseToFuture<$js.Cookie?>(
-        $js.chrome.cookies.set(details.toJS));
-    return $res?.let(Cookie.fromJS);
+    var $res = await $js.chrome.cookies.set(details.toJS).toDart;
+    if ($res != null && $res.isA<$js.Cookie>()) {
+      return Cookie.fromJS($res as $js.Cookie);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Deletes a cookie by name.
   Future<RemoveCallbackDetails?> remove(CookieDetails details) async {
-    var $res = await promiseToFuture<$js.RemoveCallbackDetails?>(
-        $js.chrome.cookies.remove(details.toJS));
-    return $res?.let(RemoveCallbackDetails.fromJS);
+    var $res = await $js.chrome.cookies.remove(details.toJS).toDart;
+    if ($res != null && $res.isA<$js.RemoveCallbackDetails>()) {
+      return RemoveCallbackDetails.fromJS($res as $js.RemoveCallbackDetails);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Lists all existing cookie stores.
   Future<List<CookieStore>> getAllCookieStores() async {
-    var $res =
-        await promiseToFuture<JSArray>($js.chrome.cookies.getAllCookieStores());
-    return $res.toDart
-        .cast<$js.CookieStore>()
-        .map((e) => CookieStore.fromJS(e))
-        .toList();
+    var $res = await $js.chrome.cookies.getAllCookieStores().toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.CookieStore>()
+          .map((e) => CookieStore.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Fired when a cookie is set or removed. As a special case, note that
@@ -75,10 +89,12 @@ class ChromeCookies {
   /// with "cause" of "overwrite" .  Afterwards, a new cookie is written with
   /// the updated values, generating a second notification with "cause"
   /// "explicit".
-  EventStream<OnChangedChangeInfo> get onChanged => $js.chrome.cookies.onChanged
-      .asStream(($c) => ($js.OnChangedChangeInfo changeInfo) {
-            return $c(OnChangedChangeInfo.fromJS(changeInfo));
-          }.toJS);
+  EventStream<OnChangedChangeInfo> get onChanged =>
+      $js.chrome.cookies.onChanged.asStream(
+        ($c) => ($js.OnChangedChangeInfo changeInfo) {
+          return $c(OnChangedChangeInfo.fromJS(changeInfo));
+        }.toJS,
+      );
 }
 
 /// A cookie's 'SameSite' state
@@ -133,11 +149,10 @@ enum OnChangedCause {
 class CookiePartitionKey {
   CookiePartitionKey.fromJS(this._wrapped);
 
-  CookiePartitionKey(
-      {
-      /// The top-level site the partitioned cookie is available in.
-      String? topLevelSite})
-      : _wrapped = $js.CookiePartitionKey(topLevelSite: topLevelSite);
+  CookiePartitionKey({
+    /// The top-level site the partitioned cookie is available in.
+    String? topLevelSite,
+  }) : _wrapped = $js.CookiePartitionKey(topLevelSite: topLevelSite);
 
   final $js.CookiePartitionKey _wrapped;
 
@@ -320,10 +335,7 @@ class CookieStore {
 
     /// Identifiers of all the browser tabs that share this cookie store.
     required List<int> tabIds,
-  }) : _wrapped = $js.CookieStore(
-          id: id,
-          tabIds: tabIds.toJSArray((e) => e),
-        );
+  }) : _wrapped = $js.CookieStore(id: id, tabIds: tabIds.toJSArray((e) => e));
 
   final $js.CookieStore _wrapped;
 

@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'src/internal_helpers.dart';
 import 'src/js/system_cpu.dart' as $js;
 import 'system.dart';
@@ -25,9 +24,11 @@ class ChromeSystemCpu {
 
   /// Queries basic CPU information of the system.
   Future<CpuInfo> getInfo() async {
-    var $res =
-        await promiseToFuture<$js.CpuInfo>($js.chrome.system.cpu.getInfo());
-    return CpuInfo.fromJS($res);
+    var $res = await $js.chrome.system.cpu.getInfo().toDart;
+    if ($res != null && $res.isA<$js.CpuInfo>()) {
+      return CpuInfo.fromJS($res as $js.CpuInfo);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 }
 
@@ -91,11 +92,10 @@ class CpuTime {
 class ProcessorInfo {
   ProcessorInfo.fromJS(this._wrapped);
 
-  ProcessorInfo(
-      {
-      /// Cumulative usage info for this logical processor.
-      required CpuTime usage})
-      : _wrapped = $js.ProcessorInfo(usage: usage.toJS);
+  ProcessorInfo({
+    /// Cumulative usage info for this logical processor.
+    required CpuTime usage,
+  }) : _wrapped = $js.ProcessorInfo(usage: usage.toJS);
 
   final $js.ProcessorInfo _wrapped;
 

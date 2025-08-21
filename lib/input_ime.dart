@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'input.dart';
 import 'src/internal_helpers.dart';
 import 'src/js/input_ime.dart' as $js;
@@ -30,9 +29,12 @@ class ChromeInputIme {
   /// [returns] Called when the operation completes with a boolean indicating
   /// if the text was accepted or not. On failure, [runtime.lastError] is set.
   Future<bool> setComposition(SetCompositionParameters parameters) async {
-    var $res = await promiseToFuture<bool>(
-        $js.chrome.input.ime.setComposition(parameters.toJS));
-    return $res;
+    var $res =
+        await $js.chrome.input.ime.setComposition(parameters.toJS).toDart;
+    if ($res != null && $res.isA<JSBoolean>()) {
+      return ($res as JSBoolean).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Clear the current composition. If this extension does not own the active
@@ -40,18 +42,23 @@ class ChromeInputIme {
   /// [returns] Called when the operation completes with a boolean indicating
   /// if the text was accepted or not. On failure, [runtime.lastError] is set.
   Future<bool> clearComposition(ClearCompositionParameters parameters) async {
-    var $res = await promiseToFuture<bool>(
-        $js.chrome.input.ime.clearComposition(parameters.toJS));
-    return $res;
+    var $res =
+        await $js.chrome.input.ime.clearComposition(parameters.toJS).toDart;
+    if ($res != null && $res.isA<JSBoolean>()) {
+      return ($res as JSBoolean).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Commits the provided text to the current input.
   /// [returns] Called when the operation completes with a boolean indicating
   /// if the text was accepted or not. On failure, [runtime.lastError] is set.
   Future<bool> commitText(CommitTextParameters parameters) async {
-    var $res = await promiseToFuture<bool>(
-        $js.chrome.input.ime.commitText(parameters.toJS));
-    return $res;
+    var $res = await $js.chrome.input.ime.commitText(parameters.toJS).toDart;
+    if ($res != null && $res.isA<JSBoolean>()) {
+      return ($res as JSBoolean).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Sends the key events.  This function is expected to be used by virtual
@@ -59,8 +66,7 @@ class ChromeInputIme {
   /// function is used to propagate that event to the system.
   /// [returns] Called when the operation completes.
   Future<void> sendKeyEvents(SendKeyEventsParameters parameters) async {
-    await promiseToFuture<void>(
-        $js.chrome.input.ime.sendKeyEvents(parameters.toJS));
+    await $js.chrome.input.ime.sendKeyEvents(parameters.toJS).toDart;
   }
 
   /// Hides the input view window, which is popped up automatically by system.
@@ -73,67 +79,82 @@ class ChromeInputIme {
   /// doesn't own the active IME
   /// [returns] Called when the operation completes.
   Future<bool> setCandidateWindowProperties(
-      SetCandidateWindowPropertiesParameters parameters) async {
-    var $res = await promiseToFuture<bool>(
-        $js.chrome.input.ime.setCandidateWindowProperties(parameters.toJS));
-    return $res;
+    SetCandidateWindowPropertiesParameters parameters,
+  ) async {
+    var $res = await $js.chrome.input.ime
+        .setCandidateWindowProperties(parameters.toJS)
+        .toDart;
+    if ($res != null && $res.isA<JSBoolean>()) {
+      return ($res as JSBoolean).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Sets the current candidate list. This fails if this extension doesn't own
   /// the active IME
   /// [returns] Called when the operation completes.
   Future<bool> setCandidates(SetCandidatesParameters parameters) async {
-    var $res = await promiseToFuture<bool>(
-        $js.chrome.input.ime.setCandidates(parameters.toJS));
-    return $res;
+    var $res = await $js.chrome.input.ime.setCandidates(parameters.toJS).toDart;
+    if ($res != null && $res.isA<JSBoolean>()) {
+      return ($res as JSBoolean).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Set the position of the cursor in the candidate window. This is a no-op if
   /// this extension does not own the active IME.
   /// [returns] Called when the operation completes
   Future<bool> setCursorPosition(SetCursorPositionParameters parameters) async {
-    var $res = await promiseToFuture<bool>(
-        $js.chrome.input.ime.setCursorPosition(parameters.toJS));
-    return $res;
+    var $res =
+        await $js.chrome.input.ime.setCursorPosition(parameters.toJS).toDart;
+    if ($res != null && $res.isA<JSBoolean>()) {
+      return ($res as JSBoolean).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Shows/Hides an assistive window with the given properties.
   /// [returns] Called when the operation completes.
   Future<bool> setAssistiveWindowProperties(
-      SetAssistiveWindowPropertiesParameters parameters) async {
-    var $res = await promiseToFuture<bool>(
-        $js.chrome.input.ime.setAssistiveWindowProperties(parameters.toJS));
-    return $res;
+    SetAssistiveWindowPropertiesParameters parameters,
+  ) async {
+    var $res = await $js.chrome.input.ime
+        .setAssistiveWindowProperties(parameters.toJS)
+        .toDart;
+    if ($res != null && $res.isA<JSBoolean>()) {
+      return ($res as JSBoolean).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Highlights/Unhighlights a button in an assistive window.
   /// [returns] Called when the operation completes. On failure,
   /// [runtime.lastError] is set.
   Future<void> setAssistiveWindowButtonHighlighted(
-      SetAssistiveWindowButtonHighlightedParameters parameters) async {
-    await promiseToFuture<void>($js.chrome.input.ime
-        .setAssistiveWindowButtonHighlighted(parameters.toJS));
+    SetAssistiveWindowButtonHighlightedParameters parameters,
+  ) async {
+    await $js.chrome.input.ime
+        .setAssistiveWindowButtonHighlighted(parameters.toJS)
+        .toDart;
   }
 
   /// Adds the provided menu items to the language menu when this IME is active.
   Future<void> setMenuItems(MenuParameters parameters) async {
-    await promiseToFuture<void>(
-        $js.chrome.input.ime.setMenuItems(parameters.toJS));
+    await $js.chrome.input.ime.setMenuItems(parameters.toJS).toDart;
   }
 
   /// Updates the state of the MenuItems specified
   /// [returns] Called when the operation completes
   Future<void> updateMenuItems(MenuParameters parameters) async {
-    await promiseToFuture<void>(
-        $js.chrome.input.ime.updateMenuItems(parameters.toJS));
+    await $js.chrome.input.ime.updateMenuItems(parameters.toJS).toDart;
   }
 
   /// Deletes the text around the caret.
   /// [returns] Called when the operation completes.
   Future<void> deleteSurroundingText(
-      DeleteSurroundingTextParameters parameters) async {
-    await promiseToFuture<void>(
-        $js.chrome.input.ime.deleteSurroundingText(parameters.toJS));
+    DeleteSurroundingTextParameters parameters,
+  ) async {
+    await $js.chrome.input.ime.deleteSurroundingText(parameters.toJS).toDart;
   }
 
   /// Indicates that the key event received by onKeyEvent is handled.  This
@@ -141,58 +162,59 @@ class ChromeInputIme {
   /// [requestId] Request id of the event that was handled.  This should come
   /// from keyEvent.requestId
   /// [response] True if the keystroke was handled, false if not
-  void keyEventHandled(
-    String requestId,
-    bool response,
-  ) {
-    $js.chrome.input.ime.keyEventHandled(
-      requestId,
-      response,
-    );
+  void keyEventHandled(String requestId, bool response) {
+    $js.chrome.input.ime.keyEventHandled(requestId, response);
   }
 
   /// This event is sent when an IME is activated. It signals that the IME will
   /// be receiving onKeyPress events.
   EventStream<OnActivateEvent> get onActivate =>
-      $js.chrome.input.ime.onActivate.asStream(($c) => (
-            String engineID,
-            $js.ScreenType screen,
-          ) {
-            return $c(OnActivateEvent(
+      $js.chrome.input.ime.onActivate.asStream(
+        ($c) => (String engineID, $js.ScreenType screen) {
+          return $c(
+            OnActivateEvent(
               engineId: engineID,
               screen: ScreenType.fromJS(screen),
-            ));
-          }.toJS);
+            ),
+          );
+        }.toJS,
+      );
 
   /// This event is sent when an IME is deactivated. It signals that the IME
   /// will no longer be receiving onKeyPress events.
   EventStream<String> get onDeactivated =>
-      $js.chrome.input.ime.onDeactivated.asStream(($c) => (String engineId) {
-            return $c(engineId);
-          }.toJS);
+      $js.chrome.input.ime.onDeactivated.asStream(
+        ($c) => (String engineId) {
+          return $c(engineId);
+        }.toJS,
+      );
 
   /// This event is sent when focus enters a text box. It is sent to all
   /// extensions that are listening to this event, and enabled by the user.
   EventStream<InputContext> get onFocus =>
-      $js.chrome.input.ime.onFocus.asStream(($c) => ($js.InputContext context) {
-            return $c(InputContext.fromJS(context));
-          }.toJS);
+      $js.chrome.input.ime.onFocus.asStream(
+        ($c) => ($js.InputContext context) {
+          return $c(InputContext.fromJS(context));
+        }.toJS,
+      );
 
   /// This event is sent when focus leaves a text box. It is sent to all
   /// extensions that are listening to this event, and enabled by the user.
-  EventStream<int> get onBlur =>
-      $js.chrome.input.ime.onBlur.asStream(($c) => (int contextId) {
-            return $c(contextId);
-          }.toJS);
+  EventStream<int> get onBlur => $js.chrome.input.ime.onBlur.asStream(
+        ($c) => (int contextId) {
+          return $c(contextId);
+        }.toJS,
+      );
 
   /// This event is sent when the properties of the current InputContext change,
   /// such as the the type. It is sent to all extensions that are listening to
   /// this event, and enabled by the user.
   EventStream<InputContext> get onInputContextUpdate =>
-      $js.chrome.input.ime.onInputContextUpdate
-          .asStream(($c) => ($js.InputContext context) {
-                return $c(InputContext.fromJS(context));
-              }.toJS);
+      $js.chrome.input.ime.onInputContextUpdate.asStream(
+        ($c) => ($js.InputContext context) {
+          return $c(InputContext.fromJS(context));
+        }.toJS,
+      );
 
   /// Fired when a key event is sent from the operating system. The event will
   /// be sent to the extension if this extension owns the active IME. The
@@ -201,73 +223,75 @@ class ChromeInputIme {
   /// must return undefined and the IME must later call keyEventHandled() with
   /// the result.
   EventStream<OnKeyEventEvent> get onKeyEvent =>
-      $js.chrome.input.ime.onKeyEvent.asStream(($c) => (
-            String engineID,
-            $js.KeyboardEvent keyData,
-            String requestId,
-          ) {
-            return $c(OnKeyEventEvent(
+      $js.chrome.input.ime.onKeyEvent.asStream(
+        ($c) => (String engineID, $js.KeyboardEvent keyData, String requestId) {
+          return $c(
+            OnKeyEventEvent(
               engineId: engineID,
               keyData: KeyboardEvent.fromJS(keyData),
               requestId: requestId,
-            ));
-          }.toJS);
+            ),
+          );
+        }.toJS,
+      );
 
   /// This event is sent if this extension owns the active IME.
   EventStream<OnCandidateClickedEvent> get onCandidateClicked =>
-      $js.chrome.input.ime.onCandidateClicked.asStream(($c) => (
-            String engineID,
-            int candidateID,
-            $js.MouseButton button,
-          ) {
-            return $c(OnCandidateClickedEvent(
+      $js.chrome.input.ime.onCandidateClicked.asStream(
+        ($c) => (String engineID, int candidateID, $js.MouseButton button) {
+          return $c(
+            OnCandidateClickedEvent(
               engineId: engineID,
               candidateId: candidateID,
               button: MouseButton.fromJS(button),
-            ));
-          }.toJS);
+            ),
+          );
+        }.toJS,
+      );
 
   /// Called when the user selects a menu item
   EventStream<OnMenuItemActivatedEvent> get onMenuItemActivated =>
-      $js.chrome.input.ime.onMenuItemActivated.asStream(($c) => (
-            String engineID,
-            String name,
-          ) {
-            return $c(OnMenuItemActivatedEvent(
-              engineId: engineID,
-              name: name,
-            ));
-          }.toJS);
+      $js.chrome.input.ime.onMenuItemActivated.asStream(
+        ($c) => (String engineID, String name) {
+          return $c(OnMenuItemActivatedEvent(engineId: engineID, name: name));
+        }.toJS,
+      );
 
   /// Called when the editable string around caret is changed or when the caret
   /// position is moved. The text length is limited to 100 characters for each
   /// back and forth direction.
   EventStream<OnSurroundingTextChangedEvent> get onSurroundingTextChanged =>
-      $js.chrome.input.ime.onSurroundingTextChanged.asStream(($c) => (
-            String engineID,
-            $js.OnSurroundingTextChangedSurroundingInfo surroundingInfo,
-          ) {
-            return $c(OnSurroundingTextChangedEvent(
+      $js.chrome.input.ime.onSurroundingTextChanged.asStream(
+        ($c) => (
+          String engineID,
+          $js.OnSurroundingTextChangedSurroundingInfo surroundingInfo,
+        ) {
+          return $c(
+            OnSurroundingTextChangedEvent(
               engineId: engineID,
               surroundingInfo: OnSurroundingTextChangedSurroundingInfo.fromJS(
-                  surroundingInfo),
-            ));
-          }.toJS);
+                surroundingInfo,
+              ),
+            ),
+          );
+        }.toJS,
+      );
 
   /// This event is sent when chrome terminates ongoing text input session.
-  EventStream<String> get onReset =>
-      $js.chrome.input.ime.onReset.asStream(($c) => (String engineId) {
-            return $c(engineId);
-          }.toJS);
+  EventStream<String> get onReset => $js.chrome.input.ime.onReset.asStream(
+        ($c) => (String engineId) {
+          return $c(engineId);
+        }.toJS,
+      );
 
   /// This event is sent when a button in an assistive window is clicked.
   EventStream<OnAssistiveWindowButtonClickedDetails>
       get onAssistiveWindowButtonClicked =>
           $js.chrome.input.ime.onAssistiveWindowButtonClicked.asStream(
-              ($c) => ($js.OnAssistiveWindowButtonClickedDetails details) {
-                    return $c(
-                        OnAssistiveWindowButtonClickedDetails.fromJS(details));
-                  }.toJS);
+            ($c) => ($js.OnAssistiveWindowButtonClickedDetails details) {
+              return $c(OnAssistiveWindowButtonClickedDetails.fromJS(details));
+            }.toJS,
+          );
 }
 
 enum KeyboardEventType {
@@ -1017,11 +1041,10 @@ class SetCompositionParameters {
 class ClearCompositionParameters {
   ClearCompositionParameters.fromJS(this._wrapped);
 
-  ClearCompositionParameters(
-      {
-      /// ID of the context where the composition will be cleared
-      required int contextId})
-      : _wrapped = $js.ClearCompositionParameters(contextID: contextId);
+  ClearCompositionParameters({
+    /// ID of the context where the composition will be cleared
+    required int contextId,
+  }) : _wrapped = $js.ClearCompositionParameters(contextID: contextId);
 
   final $js.ClearCompositionParameters _wrapped;
 
@@ -1044,10 +1067,7 @@ class CommitTextParameters {
 
     /// The text to commit
     required String text,
-  }) : _wrapped = $js.CommitTextParameters(
-          contextID: contextId,
-          text: text,
-        );
+  }) : _wrapped = $js.CommitTextParameters(contextID: contextId, text: text);
 
   final $js.CommitTextParameters _wrapped;
 
@@ -1131,7 +1151,8 @@ class SetCandidateWindowPropertiesParameters {
 
   SetCandidateWindowPropertiesParametersProperties get properties =>
       SetCandidateWindowPropertiesParametersProperties.fromJS(
-          _wrapped.properties);
+        _wrapped.properties,
+      );
 
   set properties(SetCandidateWindowPropertiesParametersProperties v) {
     _wrapped.properties = v.toJS;
@@ -1638,10 +1659,7 @@ class SetCandidatesParametersCandidatesUsage {
 }
 
 class OnActivateEvent {
-  OnActivateEvent({
-    required this.engineId,
-    required this.screen,
-  });
+  OnActivateEvent({required this.engineId, required this.screen});
 
   /// ID of the engine receiving the event
   final String engineId;
@@ -1686,10 +1704,7 @@ class OnCandidateClickedEvent {
 }
 
 class OnMenuItemActivatedEvent {
-  OnMenuItemActivatedEvent({
-    required this.engineId,
-    required this.name,
-  });
+  OnMenuItemActivatedEvent({required this.engineId, required this.name});
 
   /// ID of the engine receiving the event
   final String engineId;

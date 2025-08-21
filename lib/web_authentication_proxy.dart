@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'src/internal_helpers.dart';
 import 'src/js/web_authentication_proxy.dart' as $js;
 
@@ -30,8 +29,9 @@ class ChromeWebAuthenticationProxy {
   /// was canceled (in which case, an `onRequestCanceled` event is
   /// fired).
   Future<void> completeCreateRequest(CreateResponseDetails details) async {
-    await promiseToFuture<void>(
-        $js.chrome.webAuthenticationProxy.completeCreateRequest(details.toJS));
+    await $js.chrome.webAuthenticationProxy
+        .completeCreateRequest(details.toJS)
+        .toDart;
   }
 
   /// Reports the result of a `navigator.credentials.get()` call.
@@ -39,8 +39,9 @@ class ChromeWebAuthenticationProxy {
   /// it has received, unless the request was canceled (in which case, an
   /// `onRequestCanceled` event is fired).
   Future<void> completeGetRequest(GetResponseDetails details) async {
-    await promiseToFuture<void>(
-        $js.chrome.webAuthenticationProxy.completeGetRequest(details.toJS));
+    await $js.chrome.webAuthenticationProxy
+        .completeGetRequest(details.toJS)
+        .toDart;
   }
 
   /// Reports the result of a
@@ -48,8 +49,9 @@ class ChromeWebAuthenticationProxy {
   /// call. The extension must call this for every
   /// `onIsUvpaaRequest` event it has received.
   Future<void> completeIsUvpaaRequest(IsUvpaaResponseDetails details) async {
-    await promiseToFuture<void>(
-        $js.chrome.webAuthenticationProxy.completeIsUvpaaRequest(details.toJS));
+    await $js.chrome.webAuthenticationProxy
+        .completeIsUvpaaRequest(details.toJS)
+        .toDart;
   }
 
   /// Makes this extension the active Web Authentication API request proxy.
@@ -71,9 +73,11 @@ class ChromeWebAuthenticationProxy {
   /// a change of remote session attachment from a native application to to
   /// the (possibly suspended) extension.
   Future<String?> attach() async {
-    var $res = await promiseToFuture<String?>(
-        $js.chrome.webAuthenticationProxy.attach());
-    return $res;
+    var $res = await $js.chrome.webAuthenticationProxy.attach().toDart;
+    if ($res != null && $res.isA<JSString>()) {
+      return ($res as JSString).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Removes this extension from being the active Web Authentication API
@@ -87,9 +91,11 @@ class ChromeWebAuthenticationProxy {
   /// a change of remote session attachment from a native application to to
   /// the (possibly suspended) extension.
   Future<String?> detach() async {
-    var $res = await promiseToFuture<String?>(
-        $js.chrome.webAuthenticationProxy.detach());
-    return $res;
+    var $res = await $js.chrome.webAuthenticationProxy.detach().toDart;
+    if ($res != null && $res.isA<JSString>()) {
+      return ($res as JSString).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// A native application associated with this extension can cause this
@@ -111,30 +117,33 @@ class ChromeWebAuthenticationProxy {
   ///
   /// The event listener must be registered synchronously at load time.
   EventStream<void> get onRemoteSessionStateChange =>
-      $js.chrome.webAuthenticationProxy.onRemoteSessionStateChange
-          .asStream(($c) => () {
-                return $c(null);
-              }.toJS);
+      $js.chrome.webAuthenticationProxy.onRemoteSessionStateChange.asStream(
+        ($c) => () {
+          return $c(null);
+        }.toJS,
+      );
 
   /// Fires when a WebAuthn `navigator.credentials.create()` call
   /// occurs. The extension must supply a response by calling
   /// `completeCreateRequest()` with the `requestId` from
   /// `requestInfo`.
   EventStream<CreateRequest> get onCreateRequest =>
-      $js.chrome.webAuthenticationProxy.onCreateRequest
-          .asStream(($c) => ($js.CreateRequest requestInfo) {
-                return $c(CreateRequest.fromJS(requestInfo));
-              }.toJS);
+      $js.chrome.webAuthenticationProxy.onCreateRequest.asStream(
+        ($c) => ($js.CreateRequest requestInfo) {
+          return $c(CreateRequest.fromJS(requestInfo));
+        }.toJS,
+      );
 
   /// Fires when a WebAuthn navigator.credentials.get() call occurs. The
   /// extension must supply a response by calling
   /// `completeGetRequest()` with the `requestId` from
   /// `requestInfo`
   EventStream<GetRequest> get onGetRequest =>
-      $js.chrome.webAuthenticationProxy.onGetRequest
-          .asStream(($c) => ($js.GetRequest requestInfo) {
-                return $c(GetRequest.fromJS(requestInfo));
-              }.toJS);
+      $js.chrome.webAuthenticationProxy.onGetRequest.asStream(
+        ($c) => ($js.GetRequest requestInfo) {
+          return $c(GetRequest.fromJS(requestInfo));
+        }.toJS,
+      );
 
   /// Fires when a
   /// `PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()`
@@ -142,10 +151,11 @@ class ChromeWebAuthenticationProxy {
   /// `completeIsUvpaaRequest()` with the `requestId`
   /// from `requestInfo`
   EventStream<IsUvpaaRequest> get onIsUvpaaRequest =>
-      $js.chrome.webAuthenticationProxy.onIsUvpaaRequest
-          .asStream(($c) => ($js.IsUvpaaRequest requestInfo) {
-                return $c(IsUvpaaRequest.fromJS(requestInfo));
-              }.toJS);
+      $js.chrome.webAuthenticationProxy.onIsUvpaaRequest.asStream(
+        ($c) => ($js.IsUvpaaRequest requestInfo) {
+          return $c(IsUvpaaRequest.fromJS(requestInfo));
+        }.toJS,
+      );
 
   /// Fires when a `onCreateRequest` or `onGetRequest`
   /// event is canceled (because the WebAuthn request was aborted by the
@@ -154,20 +164,20 @@ class ChromeWebAuthenticationProxy {
   /// client side. Extensions cannot complete a request once it has been
   /// canceled.
   EventStream<int> get onRequestCanceled =>
-      $js.chrome.webAuthenticationProxy.onRequestCanceled
-          .asStream(($c) => (int requestId) {
-                return $c(requestId);
-              }.toJS);
+      $js.chrome.webAuthenticationProxy.onRequestCanceled.asStream(
+        ($c) => (int requestId) {
+          return $c(requestId);
+        }.toJS,
+      );
 }
 
 class IsUvpaaRequest {
   IsUvpaaRequest.fromJS(this._wrapped);
 
-  IsUvpaaRequest(
-      {
-      /// An opaque identifier for the request.
-      required int requestId})
-      : _wrapped = $js.IsUvpaaRequest(requestId: requestId);
+  IsUvpaaRequest({
+    /// An opaque identifier for the request.
+    required int requestId,
+  }) : _wrapped = $js.IsUvpaaRequest(requestId: requestId);
 
   final $js.IsUvpaaRequest _wrapped;
 
@@ -266,13 +276,8 @@ class GetRequest {
 class DOMExceptionDetails {
   DOMExceptionDetails.fromJS(this._wrapped);
 
-  DOMExceptionDetails({
-    required String name,
-    required String message,
-  }) : _wrapped = $js.DOMExceptionDetails(
-          name: name,
-          message: message,
-        );
+  DOMExceptionDetails({required String name, required String message})
+      : _wrapped = $js.DOMExceptionDetails(name: name, message: message);
 
   final $js.DOMExceptionDetails _wrapped;
 
@@ -396,10 +401,8 @@ class GetResponseDetails {
 class IsUvpaaResponseDetails {
   IsUvpaaResponseDetails.fromJS(this._wrapped);
 
-  IsUvpaaResponseDetails({
-    required int requestId,
-    required bool isUvpaa,
-  }) : _wrapped = $js.IsUvpaaResponseDetails(
+  IsUvpaaResponseDetails({required int requestId, required bool isUvpaa})
+      : _wrapped = $js.IsUvpaaResponseDetails(
           requestId: requestId,
           isUvpaa: isUvpaa,
         );

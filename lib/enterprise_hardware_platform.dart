@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'enterprise.dart';
 import 'src/internal_helpers.dart';
 import 'src/js/enterprise_hardware_platform.dart' as $js;
@@ -32,19 +31,21 @@ class ChromeEnterpriseHardwarePlatform {
   /// the extension is authorized, returns it via |callback|.
   /// |callback|: Called with the hardware platform info.
   Future<HardwarePlatformInfo> getHardwarePlatformInfo() async {
-    var $res = await promiseToFuture<$js.HardwarePlatformInfo>(
-        $js.chrome.enterprise.hardwarePlatform.getHardwarePlatformInfo());
-    return HardwarePlatformInfo.fromJS($res);
+    var $res = await $js.chrome.enterprise.hardwarePlatform
+        .getHardwarePlatformInfo()
+        .toDart;
+    if ($res != null && $res.isA<$js.HardwarePlatformInfo>()) {
+      return HardwarePlatformInfo.fromJS($res as $js.HardwarePlatformInfo);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 }
 
 class HardwarePlatformInfo {
   HardwarePlatformInfo.fromJS(this._wrapped);
 
-  HardwarePlatformInfo({
-    required String model,
-    required String manufacturer,
-  }) : _wrapped = $js.HardwarePlatformInfo(
+  HardwarePlatformInfo({required String model, required String manufacturer})
+      : _wrapped = $js.HardwarePlatformInfo(
           model: model,
           manufacturer: manufacturer,
         );

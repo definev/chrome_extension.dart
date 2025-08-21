@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'src/internal_helpers.dart';
 import 'src/js/sessions.dart' as $js;
 import 'tabs.dart';
@@ -25,19 +24,28 @@ class ChromeSessions {
 
   /// Gets the list of recently closed tabs and/or windows.
   Future<List<Session>> getRecentlyClosed(Filter? filter) async {
-    var $res = await promiseToFuture<JSArray>(
-        $js.chrome.sessions.getRecentlyClosed(filter?.toJS));
-    return $res.toDart
-        .cast<$js.Session>()
-        .map((e) => Session.fromJS(e))
-        .toList();
+    var $res = await $js.chrome.sessions.getRecentlyClosed(filter?.toJS).toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.Session>()
+          .map((e) => Session.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Retrieves all devices with synced sessions.
   Future<List<Device>> getDevices(Filter? filter) async {
-    var $res = await promiseToFuture<JSArray>(
-        $js.chrome.sessions.getDevices(filter?.toJS));
-    return $res.toDart.cast<$js.Device>().map((e) => Device.fromJS(e)).toList();
+    var $res = await $js.chrome.sessions.getDevices(filter?.toJS).toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.Device>()
+          .map((e) => Device.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Reopens a [windows.Window] or [tabs.Tab], with an optional callback to run
@@ -46,9 +54,11 @@ class ChromeSessions {
   /// restore. If this parameter is not specified, the most recently closed
   /// session is restored.
   Future<Session> restore(String? sessionId) async {
-    var $res = await promiseToFuture<$js.Session>(
-        $js.chrome.sessions.restore(sessionId));
-    return Session.fromJS($res);
+    var $res = await $js.chrome.sessions.restore(sessionId).toDart;
+    if ($res != null && $res.isA<$js.Session>()) {
+      return Session.fromJS($res as $js.Session);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// The maximum number of [sessions.Session] that will be included in a
@@ -57,22 +67,22 @@ class ChromeSessions {
 
   /// Fired when recently closed tabs and/or windows are changed. This event
   /// does not monitor synced sessions changes.
-  EventStream<void> get onChanged =>
-      $js.chrome.sessions.onChanged.asStream(($c) => () {
-            return $c(null);
-          }.toJS);
+  EventStream<void> get onChanged => $js.chrome.sessions.onChanged.asStream(
+        ($c) => () {
+          return $c(null);
+        }.toJS,
+      );
 }
 
 class Filter {
   Filter.fromJS(this._wrapped);
 
-  Filter(
-      {
-      /// The maximum number of entries to be fetched in the requested list. Omit
-      /// this parameter to fetch the maximum number of entries
-      /// ([sessions.MAX_SESSION_RESULTS]).
-      int? maxResults})
-      : _wrapped = $js.Filter(maxResults: maxResults);
+  Filter({
+    /// The maximum number of entries to be fetched in the requested list. Omit
+    /// this parameter to fetch the maximum number of entries
+    /// ([sessions.MAX_SESSION_RESULTS]).
+    int? maxResults,
+  }) : _wrapped = $js.Filter(maxResults: maxResults);
 
   final $js.Filter _wrapped;
 

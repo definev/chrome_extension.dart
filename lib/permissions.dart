@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'src/internal_helpers.dart';
 import 'src/js/permissions.dart' as $js;
 
@@ -25,16 +24,20 @@ class ChromePermissions {
 
   /// Gets the extension's current set of permissions.
   Future<Permissions> getAll() async {
-    var $res =
-        await promiseToFuture<$js.Permissions>($js.chrome.permissions.getAll());
-    return Permissions.fromJS($res);
+    var $res = await $js.chrome.permissions.getAll().toDart;
+    if ($res != null && $res.isA<$js.Permissions>()) {
+      return Permissions.fromJS($res as $js.Permissions);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Checks if the extension has the specified permissions.
   Future<bool> contains(Permissions permissions) async {
-    var $res = await promiseToFuture<bool>(
-        $js.chrome.permissions.contains(permissions.toJS));
-    return $res;
+    var $res = await $js.chrome.permissions.contains(permissions.toJS).toDart;
+    if ($res != null && $res.isA<JSBoolean>()) {
+      return ($res as JSBoolean).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Requests access to the specified permissions, displaying a prompt to the
@@ -46,30 +49,38 @@ class ChromePermissions {
   /// manifest, you can request `http://example.com/`. If there are any problems
   /// requesting the permissions, [runtime.lastError] will be set.
   Future<bool> request(Permissions permissions) async {
-    var $res = await promiseToFuture<bool>(
-        $js.chrome.permissions.request(permissions.toJS));
-    return $res;
+    var $res = await $js.chrome.permissions.request(permissions.toJS).toDart;
+    if ($res != null && $res.isA<JSBoolean>()) {
+      return ($res as JSBoolean).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Removes access to the specified permissions. If there are any problems
   /// removing the permissions, [runtime.lastError] will be set.
   Future<bool> remove(Permissions permissions) async {
-    var $res = await promiseToFuture<bool>(
-        $js.chrome.permissions.remove(permissions.toJS));
-    return $res;
+    var $res = await $js.chrome.permissions.remove(permissions.toJS).toDart;
+    if ($res != null && $res.isA<JSBoolean>()) {
+      return ($res as JSBoolean).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Fired when the extension acquires new permissions.
-  EventStream<Permissions> get onAdded => $js.chrome.permissions.onAdded
-      .asStream(($c) => ($js.Permissions permissions) {
-            return $c(Permissions.fromJS(permissions));
-          }.toJS);
+  EventStream<Permissions> get onAdded =>
+      $js.chrome.permissions.onAdded.asStream(
+        ($c) => ($js.Permissions permissions) {
+          return $c(Permissions.fromJS(permissions));
+        }.toJS,
+      );
 
   /// Fired when access to permissions has been removed from the extension.
-  EventStream<Permissions> get onRemoved => $js.chrome.permissions.onRemoved
-      .asStream(($c) => ($js.Permissions permissions) {
-            return $c(Permissions.fromJS(permissions));
-          }.toJS);
+  EventStream<Permissions> get onRemoved =>
+      $js.chrome.permissions.onRemoved.asStream(
+        ($c) => ($js.Permissions permissions) {
+          return $c(Permissions.fromJS(permissions));
+        }.toJS,
+      );
 }
 
 class Permissions {

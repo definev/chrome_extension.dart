@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'dart:typed_data';
 import 'src/internal_helpers.dart';
 import 'src/js/certificate_provider.dart' as $js;
@@ -32,9 +31,12 @@ class ChromeCertificateProvider {
   /// when the dialog request finishes unsuccessfully (e.g. the dialog was
   /// canceled by the user or was not allowed to be shown).
   Future<PinResponseDetails?> requestPin(RequestPinDetails details) async {
-    var $res = await promiseToFuture<$js.PinResponseDetails?>(
-        $js.chrome.certificateProvider.requestPin(details.toJS));
-    return $res?.let(PinResponseDetails.fromJS);
+    var $res =
+        await $js.chrome.certificateProvider.requestPin(details.toJS).toDart;
+    if ($res != null && $res.isA<$js.PinResponseDetails>()) {
+      return PinResponseDetails.fromJS($res as $js.PinResponseDetails);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Stops the pin request started by the [requestPin] function.
@@ -43,8 +45,7 @@ class ChromeCertificateProvider {
   /// |callback|: To be used by Chrome to send to the extension the status from
   /// their request to close PIN dialog for user.
   Future<void> stopPinRequest(StopPinRequestDetails details) async {
-    await promiseToFuture<void>(
-        $js.chrome.certificateProvider.stopPinRequest(details.toJS));
+    await $js.chrome.certificateProvider.stopPinRequest(details.toJS).toDart;
   }
 
   /// Sets a list of certificates to use in the browser.
@@ -56,8 +57,7 @@ class ChromeCertificateProvider {
   /// |details|: The certificates to set. Invalid certificates will be ignored.
   /// |callback|: Called upon completion.
   Future<void> setCertificates(SetCertificatesDetails details) async {
-    await promiseToFuture<void>(
-        $js.chrome.certificateProvider.setCertificates(details.toJS));
+    await $js.chrome.certificateProvider.setCertificates(details.toJS).toDart;
   }
 
   /// Should be called as a response to [onSignatureRequested].
@@ -66,8 +66,7 @@ class ChromeCertificateProvider {
   /// waiting for this call after some time and respond with a timeout
   /// error when this function is called.
   Future<void> reportSignature(ReportSignatureDetails details) async {
-    await promiseToFuture<void>(
-        $js.chrome.certificateProvider.reportSignature(details.toJS));
+    await $js.chrome.certificateProvider.reportSignature(details.toJS).toDart;
   }
 
   /// This event fires if the certificates set via [setCertificates]
@@ -75,10 +74,11 @@ class ChromeCertificateProvider {
   /// extension must call [setCertificates] with the updated list of
   /// certificates and the received `certificatesRequestId`.
   EventStream<CertificatesUpdateRequest> get onCertificatesUpdateRequested =>
-      $js.chrome.certificateProvider.onCertificatesUpdateRequested
-          .asStream(($c) => ($js.CertificatesUpdateRequest request) {
-                return $c(CertificatesUpdateRequest.fromJS(request));
-              }.toJS);
+      $js.chrome.certificateProvider.onCertificatesUpdateRequested.asStream(
+        ($c) => ($js.CertificatesUpdateRequest request) {
+          return $c(CertificatesUpdateRequest.fromJS(request));
+        }.toJS,
+      );
 
   /// This event fires every time the browser needs to sign a message using a
   /// certificate provided by this extension via [setCertificates].
@@ -86,36 +86,40 @@ class ChromeCertificateProvider {
   /// the appropriate algorithm and private key and return it by calling
   /// [reportSignature] with the received `signRequestId`.
   EventStream<SignatureRequest> get onSignatureRequested =>
-      $js.chrome.certificateProvider.onSignatureRequested
-          .asStream(($c) => ($js.SignatureRequest request) {
-                return $c(SignatureRequest.fromJS(request));
-              }.toJS);
+      $js.chrome.certificateProvider.onSignatureRequested.asStream(
+        ($c) => ($js.SignatureRequest request) {
+          return $c(SignatureRequest.fromJS(request));
+        }.toJS,
+      );
 
   /// This event fires every time the browser requests the current list of
   /// certificates provided by this extension. The extension must call
   /// `reportCallback` exactly once with the current list of
   /// certificates.
   EventStream<
-          void Function(
-            List<CertificateInfo>,
-            void Function(List<ByteBuffer>),
-          )>
+          void Function(List<CertificateInfo>, void Function(List<ByteBuffer>))>
       get onCertificatesRequested =>
-          $js.chrome.certificateProvider.onCertificatesRequested
-              .asStream(($c) => ($js.CertificatesCallback reportCallback) {
-                    return $c((List<CertificateInfo> certificates,
-                        void Function(List<ByteBuffer>) callback) {
-                      reportCallback.callAsFunction(
-                          null,
-                          certificates.toJSArray((e) => e.toJS),
-                          (JSArray rejectedCertificates) {
-                            callback(rejectedCertificates.toDart
-                                .cast<JSArrayBuffer>()
-                                .map((e) => e.toDart)
-                                .toList());
-                          }.toJS);
-                    });
-                  }.toJS);
+          $js.chrome.certificateProvider.onCertificatesRequested.asStream(
+            ($c) => ($js.CertificatesCallback reportCallback) {
+              return $c((
+                List<CertificateInfo> certificates,
+                void Function(List<ByteBuffer>) callback,
+              ) {
+                reportCallback.callAsFunction(
+                  null,
+                  certificates.toJSArray((e) => e.toJS),
+                  (JSArray rejectedCertificates) {
+                    callback(
+                      rejectedCertificates.toDart
+                          .cast<JSArrayBuffer>()
+                          .map((e) => e.toDart)
+                          .toList(),
+                    );
+                  }.toJS,
+                );
+              });
+            }.toJS,
+          );
 
   /// This event fires every time the browser needs to sign a message using
   /// a certificate provided by this extension in reply to an
@@ -126,17 +130,18 @@ class ChromeCertificateProvider {
   /// exactly once.
   /// |request|: Contains the details about the sign request.
   EventStream<OnSignDigestRequestedEvent> get onSignDigestRequested =>
-      $js.chrome.certificateProvider.onSignDigestRequested.asStream(($c) => (
-            $js.SignRequest request,
-            $js.SignCallback reportCallback,
-          ) {
-            return $c(OnSignDigestRequestedEvent(
+      $js.chrome.certificateProvider.onSignDigestRequested.asStream(
+        ($c) => ($js.SignRequest request, $js.SignCallback reportCallback) {
+          return $c(
+            OnSignDigestRequestedEvent(
               request: SignRequest.fromJS(request),
               reportCallback: (ByteBuffer? signature) {
                 reportCallback.callAsFunction(null, signature?.toJS);
               },
-            ));
-          }.toJS);
+            ),
+          );
+        }.toJS,
+      );
 }
 
 /// Types of supported cryptographic signature algorithms.
@@ -291,9 +296,7 @@ typedef ResultCallback = void Function(List<ByteBuffer>);
 /// still registered for the extension. Chrome will call back with the list of
 /// rejected certificates, which might be empty.
 typedef CertificatesCallback = void Function(
-  List<CertificateInfo>,
-  void Function(List<ByteBuffer>),
-);
+    List<CertificateInfo>, void Function(List<ByteBuffer>));
 
 /// If no error occurred, this function must be called with the signature of
 /// the digest using the private key of the requested certificate.
@@ -407,12 +410,12 @@ class SetCertificatesDetails {
 class CertificatesUpdateRequest {
   CertificatesUpdateRequest.fromJS(this._wrapped);
 
-  CertificatesUpdateRequest(
-      {
-      /// Request identifier to be passed to [setCertificates].
-      required int certificatesRequestId})
-      : _wrapped = $js.CertificatesUpdateRequest(
-            certificatesRequestId: certificatesRequestId);
+  CertificatesUpdateRequest({
+    /// Request identifier to be passed to [setCertificates].
+    required int certificatesRequestId,
+  }) : _wrapped = $js.CertificatesUpdateRequest(
+          certificatesRequestId: certificatesRequestId,
+        );
 
   final $js.CertificatesUpdateRequest _wrapped;
 
@@ -740,12 +743,11 @@ class StopPinRequestDetails {
 class PinResponseDetails {
   PinResponseDetails.fromJS(this._wrapped);
 
-  PinResponseDetails(
-      {
-      /// The code provided by the user. Empty if user closed the dialog or some
-      /// other error occurred.
-      String? userInput})
-      : _wrapped = $js.PinResponseDetails(userInput: userInput);
+  PinResponseDetails({
+    /// The code provided by the user. Empty if user closed the dialog or some
+    /// other error occurred.
+    String? userInput,
+  }) : _wrapped = $js.PinResponseDetails(userInput: userInput);
 
   final $js.PinResponseDetails _wrapped;
 

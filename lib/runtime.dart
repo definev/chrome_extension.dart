@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'src/internal_helpers.dart';
 import 'src/js/runtime.dart' as $js;
 import 'tabs.dart';
@@ -29,9 +28,11 @@ class ChromeRuntime {
   /// the system will ensure it is loaded before calling the callback. If there
   /// is no background page, an error is set.
   Future<JSObject?> getBackgroundPage() async {
-    var $res = await promiseToFuture<JSObject?>(
-        $js.chrome.runtime.getBackgroundPage());
-    return $res;
+    var $res = await $js.chrome.runtime.getBackgroundPage().toDart;
+    if ($res != null && $res.isA<JSObject>()) {
+      return $res as JSObject;
+    }
+    return null;
   }
 
   /// Open your Extension's options page, if possible.
@@ -45,7 +46,7 @@ class ChromeRuntime {
   /// If your Extension does not declare an options page, or Chrome failed to
   /// create one for some other reason, the callback will set [lastError].
   Future<void> openOptionsPage() async {
-    await promiseToFuture<void>($js.chrome.runtime.openOptionsPage());
+    await $js.chrome.runtime.openOptionsPage().toDart;
   }
 
   /// Returns details about the app or extension from the manifest. The object
@@ -74,7 +75,7 @@ class ChromeRuntime {
   /// [returns] Called when the uninstall URL is set. If the given URL is
   /// invalid, [runtime.lastError] will be set.
   Future<void> setUninstallURL(String url) async {
-    await promiseToFuture<void>($js.chrome.runtime.setUninstallURL(url));
+    await $js.chrome.runtime.setUninstallURL(url).toDart;
   }
 
   /// Reloads the app or extension. This method is not supported in kiosk mode.
@@ -101,9 +102,12 @@ class ChromeRuntime {
   /// function will return the two properties as separate arguments passed to
   /// the callback.
   Future<RequestUpdateCheckCallbackResult> requestUpdateCheck() async {
-    var $res = await promiseToFuture<$js.RequestUpdateCheckCallbackResult>(
-        $js.chrome.runtime.requestUpdateCheck());
-    return RequestUpdateCheckCallbackResult.fromJS($res);
+    var $res = await $js.chrome.runtime.requestUpdateCheck().toDart;
+    if ($res != null && $res.isA<$js.RequestUpdateCheckCallbackResult>()) {
+      return RequestUpdateCheckCallbackResult.fromJS(
+          $res as $js.RequestUpdateCheckCallbackResult);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Restart the ChromeOS device when the app runs in kiosk mode. Otherwise,
@@ -122,7 +126,7 @@ class ChromeRuntime {
   /// [returns] A callback to be invoked when a restart request was
   /// successfully rescheduled.
   Future<void> restartAfterDelay(int seconds) async {
-    await promiseToFuture<void>($js.chrome.runtime.restartAfterDelay(seconds));
+    await $js.chrome.runtime.restartAfterDelay(seconds).toDart;
   }
 
   /// Attempts to connect listeners within an extension/app (such as the
@@ -139,14 +143,10 @@ class ChromeRuntime {
   /// [returns] Port through which messages can be sent and received. The
   /// port's $(ref:Port onDisconnect) event is fired if the extension/app does
   /// not exist.
-  Port connect(
-    String? extensionId,
-    ConnectInfo? connectInfo,
-  ) {
-    return Port.fromJS($js.chrome.runtime.connect(
-      extensionId,
-      connectInfo?.toJS,
-    ));
+  Port connect(String? extensionId, ConnectInfo? connectInfo) {
+    return Port.fromJS(
+      $js.chrome.runtime.connect(extensionId, connectInfo?.toJS),
+    );
   }
 
   /// Connects to a native application in the host machine. See [Native
@@ -177,42 +177,46 @@ class ChromeRuntime {
     Object message,
     SendMessageOptions? options,
   ) async {
-    var $res = await promiseToFuture<JSAny?>($js.chrome.runtime.sendMessage(
-      extensionId,
-      message.jsify()!,
-      options?.toJS,
-    ));
+    var $res = await $js.chrome.runtime
+        .sendMessage(
+          extensionId,
+          message.jsify()!,
+          options?.toJS,
+        )
+        .toDart;
     return $res?.dartify();
   }
 
   /// Send a single message to a native application.
   /// [application] The name of the native messaging host.
   /// [message] The message that will be passed to the native messaging host.
-  Future<Map> sendNativeMessage(
-    String application,
-    Map message,
-  ) async {
-    var $res =
-        await promiseToFuture<JSAny>($js.chrome.runtime.sendNativeMessage(
-      application,
-      message.jsify()!,
-    ));
-    return $res.toDartMap();
+  Future<Map> sendNativeMessage(String application, Map message) async {
+    var $res = await $js.chrome.runtime
+        .sendNativeMessage(application, message.jsify()!)
+        .toDart;
+    if ($res != null && $res.isA<JSObject>()) {
+      return ($res as JSObject).toDartMap();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Returns information about the current platform.
   /// [returns] Called with results
   Future<PlatformInfo> getPlatformInfo() async {
-    var $res = await promiseToFuture<$js.PlatformInfo>(
-        $js.chrome.runtime.getPlatformInfo());
-    return PlatformInfo.fromJS($res);
+    var $res = await $js.chrome.runtime.getPlatformInfo().toDart;
+    if ($res != null && $res.isA<$js.PlatformInfo>()) {
+      return PlatformInfo.fromJS($res as $js.PlatformInfo);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Returns a DirectoryEntry for the package directory.
   Future<JSObject> getPackageDirectoryEntry() async {
-    var $res = await promiseToFuture<JSObject>(
-        $js.chrome.runtime.getPackageDirectoryEntry());
-    return $res;
+    var $res = await $js.chrome.runtime.getPackageDirectoryEntry().toDart;
+    if ($res != null && $res.isA<JSObject>()) {
+      return $res as JSObject;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Fetches information about active contexts associated with this extension
@@ -221,12 +225,15 @@ class ChromeRuntime {
   /// filter matches all contexts.
   /// [returns] Invoked with the matching contexts, if any.
   Future<List<ExtensionContext>> getContexts(ContextFilter filter) async {
-    var $res = await promiseToFuture<JSArray>(
-        $js.chrome.runtime.getContexts(filter.toJS));
-    return $res.toDart
-        .cast<$js.ExtensionContext>()
-        .map((e) => ExtensionContext.fromJS(e))
-        .toList();
+    var $res = await $js.chrome.runtime.getContexts(filter.toJS).toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.ExtensionContext>()
+          .map((e) => ExtensionContext.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Populated with an error message if calling an API function fails;
@@ -244,18 +251,20 @@ class ChromeRuntime {
   /// Fired when a profile that has this extension installed first starts up.
   /// This event is not fired when an incognito profile is started, even if this
   /// extension is operating in 'split' incognito mode.
-  EventStream<void> get onStartup =>
-      $js.chrome.runtime.onStartup.asStream(($c) => () {
-            return $c(null);
-          }.toJS);
+  EventStream<void> get onStartup => $js.chrome.runtime.onStartup.asStream(
+        ($c) => () {
+          return $c(null);
+        }.toJS,
+      );
 
   /// Fired when the extension is first installed, when the extension is updated
   /// to a new version, and when Chrome is updated to a new version.
   EventStream<OnInstalledDetails> get onInstalled =>
-      $js.chrome.runtime.onInstalled
-          .asStream(($c) => ($js.OnInstalledDetails details) {
-                return $c(OnInstalledDetails.fromJS(details));
-              }.toJS);
+      $js.chrome.runtime.onInstalled.asStream(
+        ($c) => ($js.OnInstalledDetails details) {
+          return $c(OnInstalledDetails.fromJS(details));
+        }.toJS,
+      );
 
   /// Sent to the event page just before it is unloaded. This gives the
   /// extension opportunity to do some clean up. Note that since the page is
@@ -263,16 +272,19 @@ class ChromeRuntime {
   /// are not guaranteed to complete. If more activity for the event page occurs
   /// before it gets unloaded the onSuspendCanceled event will be sent and the
   /// page won't be unloaded.
-  EventStream<void> get onSuspend =>
-      $js.chrome.runtime.onSuspend.asStream(($c) => () {
-            return $c(null);
-          }.toJS);
+  EventStream<void> get onSuspend => $js.chrome.runtime.onSuspend.asStream(
+        ($c) => () {
+          return $c(null);
+        }.toJS,
+      );
 
   /// Sent after onSuspend to indicate that the app won't be unloaded after all.
   EventStream<void> get onSuspendCanceled =>
-      $js.chrome.runtime.onSuspendCanceled.asStream(($c) => () {
-            return $c(null);
-          }.toJS);
+      $js.chrome.runtime.onSuspendCanceled.asStream(
+        ($c) => () {
+          return $c(null);
+        }.toJS,
+      );
 
   /// Fired when an update is available, but isn't installed immediately because
   /// the app is currently running. If you do nothing, the update will be
@@ -285,89 +297,102 @@ class ChromeRuntime {
   /// this event, and your extension has a persistent background page, it
   /// behaves as if chrome.runtime.reload() is called in response to this event.
   EventStream<OnUpdateAvailableDetails> get onUpdateAvailable =>
-      $js.chrome.runtime.onUpdateAvailable
-          .asStream(($c) => ($js.OnUpdateAvailableDetails details) {
-                return $c(OnUpdateAvailableDetails.fromJS(details));
-              }.toJS);
+      $js.chrome.runtime.onUpdateAvailable.asStream(
+        ($c) => ($js.OnUpdateAvailableDetails details) {
+          return $c(OnUpdateAvailableDetails.fromJS(details));
+        }.toJS,
+      );
 
   /// Fired when a Chrome update is available, but isn't installed immediately
   /// because a browser restart is required.
   EventStream<void> get onBrowserUpdateAvailable =>
-      $js.chrome.runtime.onBrowserUpdateAvailable.asStream(($c) => () {
-            return $c(null);
-          }.toJS);
+      $js.chrome.runtime.onBrowserUpdateAvailable.asStream(
+        ($c) => () {
+          return $c(null);
+        }.toJS,
+      );
 
   /// Fired when a connection is made from either an extension process or a
   /// content script (by [runtime.connect]).
-  EventStream<Port> get onConnect =>
-      $js.chrome.runtime.onConnect.asStream(($c) => ($js.Port port) {
-            return $c(Port.fromJS(port));
-          }.toJS);
+  EventStream<Port> get onConnect => $js.chrome.runtime.onConnect.asStream(
+        ($c) => ($js.Port port) {
+          return $c(Port.fromJS(port));
+        }.toJS,
+      );
 
   /// Fired when a connection is made from another extension (by
   /// [runtime.connect]), or from an externally connectable web site.
   EventStream<Port> get onConnectExternal =>
-      $js.chrome.runtime.onConnectExternal.asStream(($c) => ($js.Port port) {
-            return $c(Port.fromJS(port));
-          }.toJS);
+      $js.chrome.runtime.onConnectExternal.asStream(
+        ($c) => ($js.Port port) {
+          return $c(Port.fromJS(port));
+        }.toJS,
+      );
 
   /// Fired when a connection is made from a user script from this extension.
   EventStream<Port> get onUserScriptConnect =>
-      $js.chrome.runtime.onUserScriptConnect.asStream(($c) => ($js.Port port) {
-            return $c(Port.fromJS(port));
-          }.toJS);
+      $js.chrome.runtime.onUserScriptConnect.asStream(
+        ($c) => ($js.Port port) {
+          return $c(Port.fromJS(port));
+        }.toJS,
+      );
 
   /// Fired when a connection is made from a native application. Currently only
   /// supported on Chrome OS.
   EventStream<Port> get onConnectNative =>
-      $js.chrome.runtime.onConnectNative.asStream(($c) => ($js.Port port) {
-            return $c(Port.fromJS(port));
-          }.toJS);
+      $js.chrome.runtime.onConnectNative.asStream(
+        ($c) => ($js.Port port) {
+          return $c(Port.fromJS(port));
+        }.toJS,
+      );
 
   /// Fired when a message is sent from either an extension process (by
   /// [runtime.sendMessage]) or a content script (by [tabs.sendMessage]).
   EventStream<OnMessageEvent> get onMessage =>
-      $js.chrome.runtime.onMessage.asStream(($c) => (
-            JSAny? message,
-            $js.MessageSender sender,
-            JSFunction sendResponse,
-          ) {
-            return $c(OnMessageEvent(
+      $js.chrome.runtime.onMessage.asStream(
+        ($c) => (JSAny? message, $js.MessageSender sender,
+            JSFunction sendResponse) {
+          return $c(
+            OnMessageEvent(
               message: message?.dartify(),
               sender: MessageSender.fromJS(sender),
               sendResponse: sendResponse,
-            ));
-          }.toJS);
+            ),
+          );
+        }.toJS,
+      );
 
   /// Fired when a message is sent from another extension/app (by
   /// [runtime.sendMessage]). Cannot be used in a content script.
   EventStream<OnMessageExternalEvent> get onMessageExternal =>
-      $js.chrome.runtime.onMessageExternal.asStream(($c) => (
-            JSAny? message,
-            $js.MessageSender sender,
-            JSFunction sendResponse,
-          ) {
-            return $c(OnMessageExternalEvent(
+      $js.chrome.runtime.onMessageExternal.asStream(
+        ($c) => (JSAny? message, $js.MessageSender sender,
+            JSFunction sendResponse) {
+          return $c(
+            OnMessageExternalEvent(
               message: message?.dartify(),
               sender: MessageSender.fromJS(sender),
               sendResponse: sendResponse,
-            ));
-          }.toJS);
+            ),
+          );
+        }.toJS,
+      );
 
   /// Fired when a message is sent from a user script associated with the same
   /// extension.
   EventStream<OnUserScriptMessageEvent> get onUserScriptMessage =>
-      $js.chrome.runtime.onUserScriptMessage.asStream(($c) => (
-            JSAny? message,
-            $js.MessageSender sender,
-            JSFunction sendResponse,
-          ) {
-            return $c(OnUserScriptMessageEvent(
+      $js.chrome.runtime.onUserScriptMessage.asStream(
+        ($c) => (JSAny? message, $js.MessageSender sender,
+            JSFunction sendResponse) {
+          return $c(
+            OnUserScriptMessageEvent(
               message: message?.dartify(),
               sender: MessageSender.fromJS(sender),
               sendResponse: sendResponse,
-            ));
-          }.toJS);
+            ),
+          );
+        }.toJS,
+      );
 
   /// Fired when an app or the device that it runs on needs to be restarted. The
   /// app should close all its windows at its earliest convenient time to let
@@ -375,10 +400,11 @@ class ChromeRuntime {
   /// after a 24-hour grace period has passed. Currently, this event is only
   /// fired for Chrome OS kiosk apps.
   EventStream<OnRestartRequiredReason> get onRestartRequired =>
-      $js.chrome.runtime.onRestartRequired
-          .asStream(($c) => ($js.OnRestartRequiredReason reason) {
-                return $c(OnRestartRequiredReason.fromJS(reason));
-              }.toJS);
+      $js.chrome.runtime.onRestartRequired.asStream(
+        ($c) => ($js.OnRestartRequiredReason reason) {
+          return $c(OnRestartRequiredReason.fromJS(reason));
+        }.toJS,
+      );
 }
 
 /// The operating system Chrome is running on.
@@ -647,23 +673,24 @@ class Port {
   /// If the port is closed via $(ref:Port.disconnect disconnect), then this
   /// event is _only_ fired on the other end. This event is fired at most once
   /// (see also [Port lifetime](messaging#port-lifetime)).
-  EventStream<Port> get onDisconnect =>
-      _wrapped.onDisconnect.asStream(($c) => ($js.Port port) {
-            return $c(Port.fromJS(port));
-          }.toJS);
+  EventStream<Port> get onDisconnect => _wrapped.onDisconnect.asStream(
+        ($c) => ($js.Port port) {
+          return $c(Port.fromJS(port));
+        }.toJS,
+      );
 
   /// This event is fired when $(ref:Port.postMessage postMessage) is called by
   /// the other end of the port.
-  EventStream<PortOnMessageEvent> get onMessage =>
-      _wrapped.onMessage.asStream(($c) => (
-            JSAny message,
-            $js.Port port,
-          ) {
-            return $c(PortOnMessageEvent(
+  EventStream<PortOnMessageEvent> get onMessage => _wrapped.onMessage.asStream(
+        ($c) => (JSAny message, $js.Port port) {
+          return $c(
+            PortOnMessageEvent(
               message: message.dartify()!,
               port: Port.fromJS(port),
-            ));
-          }.toJS);
+            ),
+          );
+        }.toJS,
+      );
 }
 
 class MessageSender {
@@ -1140,11 +1167,10 @@ class OnInstalledDetails {
 class OnUpdateAvailableDetails {
   OnUpdateAvailableDetails.fromJS(this._wrapped);
 
-  OnUpdateAvailableDetails(
-      {
-      /// The version number of the available update.
-      required String version})
-      : _wrapped = $js.OnUpdateAvailableDetails(version: version);
+  OnUpdateAvailableDetails({
+    /// The version number of the available update.
+    required String version,
+  }) : _wrapped = $js.OnUpdateAvailableDetails(version: version);
 
   final $js.OnUpdateAvailableDetails _wrapped;
 
@@ -1234,13 +1260,13 @@ class ConnectInfo {
 class SendMessageOptions {
   SendMessageOptions.fromJS(this._wrapped);
 
-  SendMessageOptions(
-      {
-      /// Whether the TLS channel ID will be passed into onMessageExternal for
-      /// processes that are listening for the connection event.
-      bool? includeTlsChannelId})
-      : _wrapped =
-            $js.SendMessageOptions(includeTlsChannelId: includeTlsChannelId);
+  SendMessageOptions({
+    /// Whether the TLS channel ID will be passed into onMessageExternal for
+    /// processes that are listening for the connection event.
+    bool? includeTlsChannelId,
+  }) : _wrapped = $js.SendMessageOptions(
+          includeTlsChannelId: includeTlsChannelId,
+        );
 
   final $js.SendMessageOptions _wrapped;
 
@@ -1258,11 +1284,10 @@ class SendMessageOptions {
 class RuntimeLastError {
   RuntimeLastError.fromJS(this._wrapped);
 
-  RuntimeLastError(
-      {
-      /// Details about the error which occurred.
-      String? message})
-      : _wrapped = $js.RuntimeLastError(message: message);
+  RuntimeLastError({
+    /// Details about the error which occurred.
+    String? message,
+  }) : _wrapped = $js.RuntimeLastError(message: message);
 
   final $js.RuntimeLastError _wrapped;
 
@@ -1343,10 +1368,7 @@ class OnUserScriptMessageEvent {
 }
 
 class PortOnMessageEvent {
-  PortOnMessageEvent({
-    required this.message,
-    required this.port,
-  });
+  PortOnMessageEvent({required this.message, required this.port});
 
   /// The message received on the port.
   final Object message;

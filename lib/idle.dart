@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'src/internal_helpers.dart';
 import 'src/js/idle.dart' as $js;
 
@@ -27,9 +26,12 @@ class ChromeIdle {
   /// detectionIntervalInSeconds seconds have elapsed since the last user
   /// input detected.
   Future<IdleState> queryState(int detectionIntervalInSeconds) async {
-    var $res = await promiseToFuture<$js.IdleState>(
-        $js.chrome.idle.queryState(detectionIntervalInSeconds));
-    return IdleState.fromJS($res);
+    var $res =
+        await $js.chrome.idle.queryState(detectionIntervalInSeconds).toDart;
+    if ($res != null && $res.isA<$js.IdleState>()) {
+      return IdleState.fromJS($res as $js.IdleState);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Sets the interval, in seconds, used to determine when the system is in an
@@ -44,8 +46,11 @@ class ChromeIdle {
   /// automatically while idle. Returns a zero duration if the screen is never
   /// locked automatically. Currently supported on Chrome OS only.
   Future<int> getAutoLockDelay() async {
-    var $res = await promiseToFuture<int>($js.chrome.idle.getAutoLockDelay());
-    return $res;
+    var $res = await $js.chrome.idle.getAutoLockDelay().toDart;
+    if ($res != null && $res.isA<JSNumber>()) {
+      return ($res as JSNumber).toDartInt;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Fired when the system changes to an active, idle or locked state. The
@@ -54,9 +59,11 @@ class ChromeIdle {
   /// any input for a specified number of seconds, and "active" when the user
   /// generates input on an idle system.
   EventStream<IdleState> get onStateChanged =>
-      $js.chrome.idle.onStateChanged.asStream(($c) => ($js.IdleState newState) {
-            return $c(IdleState.fromJS(newState));
-          }.toJS);
+      $js.chrome.idle.onStateChanged.asStream(
+        ($c) => ($js.IdleState newState) {
+          return $c(IdleState.fromJS(newState));
+        }.toJS,
+      );
 }
 
 enum IdleState {

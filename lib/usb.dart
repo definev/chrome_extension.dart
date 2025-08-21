@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'dart:typed_data';
 import 'src/internal_helpers.dart';
 import 'src/js/usb.dart' as $js;
@@ -32,9 +31,15 @@ class ChromeUsb {
   /// Enumerates connected USB devices.
   /// |options|: The properties to search for on target devices.
   Future<List<Device>> getDevices(EnumerateDevicesOptions options) async {
-    var $res =
-        await promiseToFuture<JSArray>($js.chrome.usb.getDevices(options.toJS));
-    return $res.toDart.cast<$js.Device>().map((e) => Device.fromJS(e)).toList();
+    var $res = await $js.chrome.usb.getDevices(options.toJS).toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.Device>()
+          .map((e) => Device.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Presents a device picker to the user and returns the [Device]s
@@ -45,21 +50,31 @@ class ChromeUsb {
   /// |options|: Configuration of the device picker dialog box.
   /// |callback|: Invoked with a list of chosen [Device]s.
   Future<List<Device>> getUserSelectedDevices(
-      DevicePromptOptions options) async {
-    var $res = await promiseToFuture<JSArray>(
-        $js.chrome.usb.getUserSelectedDevices(options.toJS));
-    return $res.toDart.cast<$js.Device>().map((e) => Device.fromJS(e)).toList();
+    DevicePromptOptions options,
+  ) async {
+    var $res = await $js.chrome.usb.getUserSelectedDevices(options.toJS).toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.Device>()
+          .map((e) => Device.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Returns the full set of device configuration descriptors.
   /// |device|: The [Device] to fetch descriptors from.
   Future<List<ConfigDescriptor>> getConfigurations(Device device) async {
-    var $res = await promiseToFuture<JSArray>(
-        $js.chrome.usb.getConfigurations(device.toJS));
-    return $res.toDart
-        .cast<$js.ConfigDescriptor>()
-        .map((e) => ConfigDescriptor.fromJS(e))
-        .toList();
+    var $res = await $js.chrome.usb.getConfigurations(device.toJS).toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.ConfigDescriptor>()
+          .map((e) => ConfigDescriptor.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Requests access from the permission broker to a device claimed by
@@ -68,24 +83,25 @@ class ChromeUsb {
   /// |device|: The [Device] to request access to.
   /// |interfaceId|: The particular interface requested.
   @Deprecated(
-      r'This function was Chrome OS specific and calling it on other platforms would fail. This operation is now implicitly performed as part of $(ref:openDevice) and this function will return <code>true</code> on all platforms.')
-  Future<bool> requestAccess(
-    Device device,
-    int interfaceId,
-  ) async {
-    var $res = await promiseToFuture<bool>($js.chrome.usb.requestAccess(
-      device.toJS,
-      interfaceId,
-    ));
-    return $res;
+    r'This function was Chrome OS specific and calling it on other platforms would fail. This operation is now implicitly performed as part of $(ref:openDevice) and this function will return <code>true</code> on all platforms.',
+  )
+  Future<bool> requestAccess(Device device, int interfaceId) async {
+    var $res =
+        await $js.chrome.usb.requestAccess(device.toJS, interfaceId).toDart;
+    if ($res != null && $res.isA<JSBoolean>()) {
+      return ($res as JSBoolean).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Opens a USB device returned by [getDevices].
   /// |device|: The [Device] to open.
   Future<ConnectionHandle> openDevice(Device device) async {
-    var $res = await promiseToFuture<$js.ConnectionHandle>(
-        $js.chrome.usb.openDevice(device.toJS));
-    return ConnectionHandle.fromJS($res);
+    var $res = await $js.chrome.usb.openDevice(device.toJS).toDart;
+    if ($res != null && $res.isA<$js.ConnectionHandle>()) {
+      return ConnectionHandle.fromJS($res as $js.ConnectionHandle);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Finds USB devices specified by the vendor, product and (optionally)
@@ -99,20 +115,24 @@ class ChromeUsb {
   ///
   /// |options|: The properties to search for on target devices.
   Future<List<ConnectionHandle>> findDevices(
-      EnumerateDevicesAndRequestAccessOptions options) async {
-    var $res = await promiseToFuture<JSArray>(
-        $js.chrome.usb.findDevices(options.toJS));
-    return $res.toDart
-        .cast<$js.ConnectionHandle>()
-        .map((e) => ConnectionHandle.fromJS(e))
-        .toList();
+    EnumerateDevicesAndRequestAccessOptions options,
+  ) async {
+    var $res = await $js.chrome.usb.findDevices(options.toJS).toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.ConnectionHandle>()
+          .map((e) => ConnectionHandle.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Closes a connection handle. Invoking operations on a handle after it
   /// has been closed is a safe operation but causes no action to be taken.
   /// |handle|: The [ConnectionHandle] to close.
   Future<void> closeDevice(ConnectionHandle handle) async {
-    await promiseToFuture<void>($js.chrome.usb.closeDevice(handle.toJS));
+    await $js.chrome.usb.closeDevice(handle.toJS).toDart;
   }
 
   /// Select a device configuration.
@@ -126,31 +146,36 @@ class ChromeUsb {
     ConnectionHandle handle,
     int configurationValue,
   ) async {
-    await promiseToFuture<void>($js.chrome.usb.setConfiguration(
-      handle.toJS,
-      configurationValue,
-    ));
+    await $js.chrome.usb
+        .setConfiguration(handle.toJS, configurationValue)
+        .toDart;
   }
 
   /// Gets the configuration descriptor for the currently selected
   /// configuration.
   /// |handle|: An open connection to the device.
   Future<ConfigDescriptor> getConfiguration(ConnectionHandle handle) async {
-    var $res = await promiseToFuture<$js.ConfigDescriptor>(
-        $js.chrome.usb.getConfiguration(handle.toJS));
-    return ConfigDescriptor.fromJS($res);
+    var $res = await $js.chrome.usb.getConfiguration(handle.toJS).toDart;
+    if ($res != null && $res.isA<$js.ConfigDescriptor>()) {
+      return ConfigDescriptor.fromJS($res as $js.ConfigDescriptor);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Lists all interfaces on a USB device.
   /// |handle|: An open connection to the device.
   Future<List<InterfaceDescriptor>> listInterfaces(
-      ConnectionHandle handle) async {
-    var $res = await promiseToFuture<JSArray>(
-        $js.chrome.usb.listInterfaces(handle.toJS));
-    return $res.toDart
-        .cast<$js.InterfaceDescriptor>()
-        .map((e) => InterfaceDescriptor.fromJS(e))
-        .toList();
+    ConnectionHandle handle,
+  ) async {
+    var $res = await $js.chrome.usb.listInterfaces(handle.toJS).toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.InterfaceDescriptor>()
+          .map((e) => InterfaceDescriptor.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Claims an interface on a USB device.
@@ -168,10 +193,7 @@ class ChromeUsb {
     ConnectionHandle handle,
     int interfaceNumber,
   ) async {
-    await promiseToFuture<void>($js.chrome.usb.claimInterface(
-      handle.toJS,
-      interfaceNumber,
-    ));
+    await $js.chrome.usb.claimInterface(handle.toJS, interfaceNumber).toDart;
   }
 
   /// Releases a claimed interface.
@@ -181,10 +203,7 @@ class ChromeUsb {
     ConnectionHandle handle,
     int interfaceNumber,
   ) async {
-    await promiseToFuture<void>($js.chrome.usb.releaseInterface(
-      handle.toJS,
-      interfaceNumber,
-    ));
+    await $js.chrome.usb.releaseInterface(handle.toJS, interfaceNumber).toDart;
   }
 
   /// Selects an alternate setting on a previously claimed interface.
@@ -197,11 +216,13 @@ class ChromeUsb {
     int interfaceNumber,
     int alternateSetting,
   ) async {
-    await promiseToFuture<void>($js.chrome.usb.setInterfaceAlternateSetting(
-      handle.toJS,
-      interfaceNumber,
-      alternateSetting,
-    ));
+    await $js.chrome.usb
+        .setInterfaceAlternateSetting(
+          handle.toJS,
+          interfaceNumber,
+          alternateSetting,
+        )
+        .toDart;
   }
 
   /// Performs a control transfer on the specified device.
@@ -215,12 +236,13 @@ class ChromeUsb {
     ConnectionHandle handle,
     ControlTransferInfo transferInfo,
   ) async {
-    var $res = await promiseToFuture<$js.TransferResultInfo>(
-        $js.chrome.usb.controlTransfer(
-      handle.toJS,
-      transferInfo.toJS,
-    ));
-    return TransferResultInfo.fromJS($res);
+    var $res = await $js.chrome.usb
+        .controlTransfer(handle.toJS, transferInfo.toJS)
+        .toDart;
+    if ($res != null && $res.isA<$js.TransferResultInfo>()) {
+      return TransferResultInfo.fromJS($res as $js.TransferResultInfo);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Performs a bulk transfer on the specified device.
@@ -230,12 +252,13 @@ class ChromeUsb {
     ConnectionHandle handle,
     GenericTransferInfo transferInfo,
   ) async {
-    var $res = await promiseToFuture<$js.TransferResultInfo>(
-        $js.chrome.usb.bulkTransfer(
-      handle.toJS,
-      transferInfo.toJS,
-    ));
-    return TransferResultInfo.fromJS($res);
+    var $res = await $js.chrome.usb
+        .bulkTransfer(handle.toJS, transferInfo.toJS)
+        .toDart;
+    if ($res != null && $res.isA<$js.TransferResultInfo>()) {
+      return TransferResultInfo.fromJS($res as $js.TransferResultInfo);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Performs an interrupt transfer on the specified device.
@@ -245,12 +268,13 @@ class ChromeUsb {
     ConnectionHandle handle,
     GenericTransferInfo transferInfo,
   ) async {
-    var $res = await promiseToFuture<$js.TransferResultInfo>(
-        $js.chrome.usb.interruptTransfer(
-      handle.toJS,
-      transferInfo.toJS,
-    ));
-    return TransferResultInfo.fromJS($res);
+    var $res = await $js.chrome.usb
+        .interruptTransfer(handle.toJS, transferInfo.toJS)
+        .toDart;
+    if ($res != null && $res.isA<$js.TransferResultInfo>()) {
+      return TransferResultInfo.fromJS($res as $js.TransferResultInfo);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Performs an isochronous transfer on the specific device.
@@ -259,12 +283,13 @@ class ChromeUsb {
     ConnectionHandle handle,
     IsochronousTransferInfo transferInfo,
   ) async {
-    var $res = await promiseToFuture<$js.TransferResultInfo>(
-        $js.chrome.usb.isochronousTransfer(
-      handle.toJS,
-      transferInfo.toJS,
-    ));
-    return TransferResultInfo.fromJS($res);
+    var $res = await $js.chrome.usb
+        .isochronousTransfer(handle.toJS, transferInfo.toJS)
+        .toDart;
+    if ($res != null && $res.isA<$js.TransferResultInfo>()) {
+      return TransferResultInfo.fromJS($res as $js.TransferResultInfo);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Tries to reset the USB device.
@@ -275,9 +300,11 @@ class ChromeUsb {
   ///
   /// |handle|: A connection handle to reset.
   Future<bool> resetDevice(ConnectionHandle handle) async {
-    var $res =
-        await promiseToFuture<bool>($js.chrome.usb.resetDevice(handle.toJS));
-    return $res;
+    var $res = await $js.chrome.usb.resetDevice(handle.toJS).toDart;
+    if ($res != null && $res.isA<JSBoolean>()) {
+      return ($res as JSBoolean).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Event generated when a device is added to the system. Events are only
@@ -286,16 +313,20 @@ class ChromeUsb {
   /// accepted an optional permission (see [permissions.request]), or
   /// through [getUserSelectedDevices].
   EventStream<Device> get onDeviceAdded =>
-      $js.chrome.usb.onDeviceAdded.asStream(($c) => ($js.Device device) {
-            return $c(Device.fromJS(device));
-          }.toJS);
+      $js.chrome.usb.onDeviceAdded.asStream(
+        ($c) => ($js.Device device) {
+          return $c(Device.fromJS(device));
+        }.toJS,
+      );
 
   /// Event generated when a device is removed from the system. See
   /// [onDeviceAdded] for which events are delivered.
   EventStream<Device> get onDeviceRemoved =>
-      $js.chrome.usb.onDeviceRemoved.asStream(($c) => ($js.Device device) {
-            return $c(Device.fromJS(device));
-          }.toJS);
+      $js.chrome.usb.onDeviceRemoved.asStream(
+        ($c) => ($js.Device device) {
+          return $c(Device.fromJS(device));
+        }.toJS,
+      );
 }
 
 /// Direction, Recipient, RequestType, and TransferType all map to their

@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'src/internal_helpers.dart';
 import 'src/js/tab_capture.dart' as $js;
 
@@ -54,12 +53,15 @@ class ChromeTabCapture {
   /// to prevent redundant requests for the same tab).
   /// |callback| : Callback invoked with CaptureInfo[] for captured tabs.
   Future<List<CaptureInfo>> getCapturedTabs() async {
-    var $res =
-        await promiseToFuture<JSArray>($js.chrome.tabCapture.getCapturedTabs());
-    return $res.toDart
-        .cast<$js.CaptureInfo>()
-        .map((e) => CaptureInfo.fromJS(e))
-        .toList();
+    var $res = await $js.chrome.tabCapture.getCapturedTabs().toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.CaptureInfo>()
+          .map((e) => CaptureInfo.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Creates a stream ID to capture the target tab.
@@ -73,9 +75,12 @@ class ChromeTabCapture {
   /// corresponds to the target tab. The created `streamId` can
   /// only be used once and expires after a few seconds if it is not used.
   Future<String> getMediaStreamId(GetMediaStreamOptions? options) async {
-    var $res = await promiseToFuture<String>(
-        $js.chrome.tabCapture.getMediaStreamId(options?.toJS));
-    return $res;
+    var $res =
+        await $js.chrome.tabCapture.getMediaStreamId(options?.toJS).toDart;
+    if ($res != null && $res.isA<JSString>()) {
+      return ($res as JSString).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Event fired when the capture status of a tab changes.
@@ -83,10 +88,11 @@ class ChromeTabCapture {
   /// tabs to keep UI elements like page actions in sync.
   /// |info| : CaptureInfo with new capture status for the tab.
   EventStream<CaptureInfo> get onStatusChanged =>
-      $js.chrome.tabCapture.onStatusChanged
-          .asStream(($c) => ($js.CaptureInfo info) {
-                return $c(CaptureInfo.fromJS(info));
-              }.toJS);
+      $js.chrome.tabCapture.onStatusChanged.asStream(
+        ($c) => ($js.CaptureInfo info) {
+          return $c(CaptureInfo.fromJS(info));
+        }.toJS,
+      );
 }
 
 enum TabCaptureState {

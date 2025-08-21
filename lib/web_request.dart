@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'extension_types.dart';
 import 'src/internal_helpers.dart';
 import 'src/js/web_request.dart' as $js;
@@ -26,7 +25,7 @@ class ChromeWebRequest {
   /// changed to prevent incorrect handling due to caching. This function call
   /// is expensive. Don't call it often.
   Future<void> handlerBehaviorChanged() async {
-    await promiseToFuture<void>($js.chrome.webRequest.handlerBehaviorChanged());
+    await $js.chrome.webRequest.handlerBehaviorChanged().toDart;
   }
 
   /// The maximum number of times that `handlerBehaviorChanged` can be called
@@ -37,35 +36,39 @@ class ChromeWebRequest {
 
   /// Fired when a request is about to occur.
   EventStream<OnBeforeRequestDetails> get onBeforeRequest =>
-      $js.chrome.webRequest.onBeforeRequest
-          .asStream(($c) => ($js.OnBeforeRequestDetails details) {
-                return $c(OnBeforeRequestDetails.fromJS(details));
-              }.toJS);
+      $js.chrome.webRequest.onBeforeRequest.asStream(
+        ($c) => ($js.OnBeforeRequestDetails details) {
+          return $c(OnBeforeRequestDetails.fromJS(details));
+        }.toJS,
+      );
 
   /// Fired before sending an HTTP request, once the request headers are
   /// available. This may occur after a TCP connection is made to the server,
   /// but before any HTTP data is sent.
   EventStream<OnBeforeSendHeadersDetails> get onBeforeSendHeaders =>
-      $js.chrome.webRequest.onBeforeSendHeaders
-          .asStream(($c) => ($js.OnBeforeSendHeadersDetails details) {
-                return $c(OnBeforeSendHeadersDetails.fromJS(details));
-              }.toJS);
+      $js.chrome.webRequest.onBeforeSendHeaders.asStream(
+        ($c) => ($js.OnBeforeSendHeadersDetails details) {
+          return $c(OnBeforeSendHeadersDetails.fromJS(details));
+        }.toJS,
+      );
 
   /// Fired just before a request is going to be sent to the server
   /// (modifications of previous onBeforeSendHeaders callbacks are visible by
   /// the time onSendHeaders is fired).
   EventStream<OnSendHeadersDetails> get onSendHeaders =>
-      $js.chrome.webRequest.onSendHeaders
-          .asStream(($c) => ($js.OnSendHeadersDetails details) {
-                return $c(OnSendHeadersDetails.fromJS(details));
-              }.toJS);
+      $js.chrome.webRequest.onSendHeaders.asStream(
+        ($c) => ($js.OnSendHeadersDetails details) {
+          return $c(OnSendHeadersDetails.fromJS(details));
+        }.toJS,
+      );
 
   /// Fired when HTTP response headers of a request have been received.
   EventStream<OnHeadersReceivedDetails> get onHeadersReceived =>
-      $js.chrome.webRequest.onHeadersReceived
-          .asStream(($c) => ($js.OnHeadersReceivedDetails details) {
-                return $c(OnHeadersReceivedDetails.fromJS(details));
-              }.toJS);
+      $js.chrome.webRequest.onHeadersReceived.asStream(
+        ($c) => ($js.OnHeadersReceivedDetails details) {
+          return $c(OnHeadersReceivedDetails.fromJS(details));
+        }.toJS,
+      );
 
   /// Fired when an authentication failure is received. The listener has three
   /// options: it can provide authentication credentials, it can cancel the
@@ -75,53 +78,59 @@ class ChromeWebRequest {
   /// `'asyncBlocking'` modes must be specified in the `extraInfoSpec`
   /// parameter.
   EventStream<OnAuthRequiredEvent> get onAuthRequired =>
-      $js.chrome.webRequest.onAuthRequired.asStream(($c) => (
-            $js.OnAuthRequiredDetails details,
-            JSFunction? asyncCallback,
-          ) {
-            return $c(OnAuthRequiredEvent(
+      $js.chrome.webRequest.onAuthRequired.asStream(
+        ($c) => ($js.OnAuthRequiredDetails details, JSFunction? asyncCallback) {
+          return $c(
+            OnAuthRequiredEvent(
               details: OnAuthRequiredDetails.fromJS(details),
               asyncCallback: asyncCallback,
-            ));
-          }.toJS);
+            ),
+          );
+        }.toJS,
+      );
 
   /// Fired when the first byte of the response body is received. For HTTP
   /// requests, this means that the status line and response headers are
   /// available.
   EventStream<OnResponseStartedDetails> get onResponseStarted =>
-      $js.chrome.webRequest.onResponseStarted
-          .asStream(($c) => ($js.OnResponseStartedDetails details) {
-                return $c(OnResponseStartedDetails.fromJS(details));
-              }.toJS);
+      $js.chrome.webRequest.onResponseStarted.asStream(
+        ($c) => ($js.OnResponseStartedDetails details) {
+          return $c(OnResponseStartedDetails.fromJS(details));
+        }.toJS,
+      );
 
   /// Fired when a server-initiated redirect is about to occur.
   EventStream<OnBeforeRedirectDetails> get onBeforeRedirect =>
-      $js.chrome.webRequest.onBeforeRedirect
-          .asStream(($c) => ($js.OnBeforeRedirectDetails details) {
-                return $c(OnBeforeRedirectDetails.fromJS(details));
-              }.toJS);
+      $js.chrome.webRequest.onBeforeRedirect.asStream(
+        ($c) => ($js.OnBeforeRedirectDetails details) {
+          return $c(OnBeforeRedirectDetails.fromJS(details));
+        }.toJS,
+      );
 
   /// Fired when a request is completed.
   EventStream<OnCompletedDetails> get onCompleted =>
-      $js.chrome.webRequest.onCompleted
-          .asStream(($c) => ($js.OnCompletedDetails details) {
-                return $c(OnCompletedDetails.fromJS(details));
-              }.toJS);
+      $js.chrome.webRequest.onCompleted.asStream(
+        ($c) => ($js.OnCompletedDetails details) {
+          return $c(OnCompletedDetails.fromJS(details));
+        }.toJS,
+      );
 
   /// Fired when an error occurs.
   EventStream<OnErrorOccurredDetails> get onErrorOccurred =>
-      $js.chrome.webRequest.onErrorOccurred
-          .asStream(($c) => ($js.OnErrorOccurredDetails details) {
-                return $c(OnErrorOccurredDetails.fromJS(details));
-              }.toJS);
+      $js.chrome.webRequest.onErrorOccurred.asStream(
+        ($c) => ($js.OnErrorOccurredDetails details) {
+          return $c(OnErrorOccurredDetails.fromJS(details));
+        }.toJS,
+      );
 
   /// Fired when an extension's proposed modification to a network request is
   /// ignored. This happens in case of conflicts with other extensions.
   EventStream<OnActionIgnoredDetails> get onActionIgnored =>
-      $js.chrome.webRequest.onActionIgnored
-          .asStream(($c) => ($js.OnActionIgnoredDetails details) {
-                return $c(OnActionIgnoredDetails.fromJS(details));
-              }.toJS);
+      $js.chrome.webRequest.onActionIgnored.asStream(
+        ($c) => ($js.OnActionIgnoredDetails details) {
+          return $c(OnActionIgnoredDetails.fromJS(details));
+        }.toJS,
+      );
 }
 
 enum ResourceType {
@@ -543,10 +552,7 @@ class UploadData {
 
     /// A string with the file's path and name.
     String? file,
-  }) : _wrapped = $js.UploadData(
-          bytes: bytes?.jsify(),
-          file: file,
-        );
+  }) : _wrapped = $js.UploadData(bytes: bytes?.jsify(), file: file);
 
   final $js.UploadData _wrapped;
 
@@ -2707,13 +2713,8 @@ class OnBeforeRequestDetailsRequestBody {
 class OnAuthRequiredDetailsChallenger {
   OnAuthRequiredDetailsChallenger.fromJS(this._wrapped);
 
-  OnAuthRequiredDetailsChallenger({
-    required String host,
-    required int port,
-  }) : _wrapped = $js.OnAuthRequiredDetailsChallenger(
-          host: host,
-          port: port,
-        );
+  OnAuthRequiredDetailsChallenger({required String host, required int port})
+      : _wrapped = $js.OnAuthRequiredDetailsChallenger(host: host, port: port);
 
   final $js.OnAuthRequiredDetailsChallenger _wrapped;
 
@@ -2733,10 +2734,7 @@ class OnAuthRequiredDetailsChallenger {
 }
 
 class OnAuthRequiredEvent {
-  OnAuthRequiredEvent({
-    required this.details,
-    required this.asyncCallback,
-  });
+  OnAuthRequiredEvent({required this.details, required this.asyncCallback});
 
   final OnAuthRequiredDetails details;
 

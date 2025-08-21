@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'src/internal_helpers.dart';
 import 'src/js/tts.dart' as $js;
 
@@ -32,14 +31,8 @@ class ChromeTts {
   /// [returns] Called right away, before speech finishes. Check
   /// [runtime.lastError] to make sure there were no errors. Use
   /// options.onEvent to get more detailed feedback.
-  Future<void> speak(
-    String utterance,
-    TtsOptions? options,
-  ) async {
-    await promiseToFuture<void>($js.chrome.tts.speak(
-      utterance,
-      options?.toJS,
-    ));
+  Future<void> speak(String utterance, TtsOptions? options) async {
+    await $js.chrome.tts.speak(utterance, options?.toJS).toDart;
   }
 
   /// Stops any current speech and flushes the queue of any pending utterances.
@@ -64,24 +57,32 @@ class ChromeTts {
   /// is true whenever the system speech engine is speaking, even if the speech
   /// wasn't initiated by Chrome.
   Future<bool> isSpeaking() async {
-    var $res = await promiseToFuture<bool>($js.chrome.tts.isSpeaking());
-    return $res;
+    var $res = await $js.chrome.tts.isSpeaking().toDart;
+    if ($res != null && $res.isA<JSBoolean>()) {
+      return ($res as JSBoolean).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Gets an array of all available voices.
   Future<List<TtsVoice>> getVoices() async {
-    var $res = await promiseToFuture<JSArray>($js.chrome.tts.getVoices());
-    return $res.toDart
-        .cast<$js.TtsVoice>()
-        .map((e) => TtsVoice.fromJS(e))
-        .toList();
+    var $res = await $js.chrome.tts.getVoices().toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.TtsVoice>()
+          .map((e) => TtsVoice.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Used to pass events back to the function calling speak().
-  EventStream<TtsEvent> get onEvent =>
-      $js.chrome.tts.onEvent.asStream(($c) => ($js.TtsEvent event) {
-            return $c(TtsEvent.fromJS(event));
-          }.toJS);
+  EventStream<TtsEvent> get onEvent => $js.chrome.tts.onEvent.asStream(
+        ($c) => ($js.TtsEvent event) {
+          return $c(TtsEvent.fromJS(event));
+        }.toJS,
+      );
 }
 
 enum EventType {

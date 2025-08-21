@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'src/internal_helpers.dart';
 import 'src/js/tabs.dart' as $js_tabs;
 import 'src/js/windows.dart' as $js;
@@ -24,63 +23,72 @@ class ChromeWindows {
   bool get isAvailable => $js.chrome.windowsNullable != null && alwaysTrue;
 
   /// Gets details about a window.
-  Future<Window> get(
-    int windowId,
-    QueryOptions? queryOptions,
-  ) async {
-    var $res = await promiseToFuture<$js.Window>($js.chrome.windows.get(
-      windowId,
-      queryOptions?.toJS,
-    ));
-    return Window.fromJS($res);
+  Future<Window> get(int windowId, QueryOptions? queryOptions) async {
+    var $res =
+        await $js.chrome.windows.get(windowId, queryOptions?.toJS).toDart;
+    if ($res != null && $res.isA<$js.Window>()) {
+      return Window.fromJS($res as $js.Window);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Gets the [current window](#current-window).
   Future<Window> getCurrent(QueryOptions? queryOptions) async {
-    var $res = await promiseToFuture<$js.Window>(
-        $js.chrome.windows.getCurrent(queryOptions?.toJS));
-    return Window.fromJS($res);
+    var $res = await $js.chrome.windows.getCurrent(queryOptions?.toJS).toDart;
+    if ($res != null && $res.isA<$js.Window>()) {
+      return Window.fromJS($res as $js.Window);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Gets the window that was most recently focused - typically the window 'on
   /// top'.
   Future<Window> getLastFocused(QueryOptions? queryOptions) async {
-    var $res = await promiseToFuture<$js.Window>(
-        $js.chrome.windows.getLastFocused(queryOptions?.toJS));
-    return Window.fromJS($res);
+    var $res =
+        await $js.chrome.windows.getLastFocused(queryOptions?.toJS).toDart;
+    if ($res != null && $res.isA<$js.Window>()) {
+      return Window.fromJS($res as $js.Window);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Gets all windows.
   Future<List<Window>> getAll(QueryOptions? queryOptions) async {
-    var $res = await promiseToFuture<JSArray>(
-        $js.chrome.windows.getAll(queryOptions?.toJS));
-    return $res.toDart.cast<$js.Window>().map((e) => Window.fromJS(e)).toList();
+    var $res = await $js.chrome.windows.getAll(queryOptions?.toJS).toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.Window>()
+          .map((e) => Window.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Creates (opens) a new browser window with any optional sizing, position,
   /// or default URL provided.
   Future<Window?> create(CreateData? createData) async {
-    var $res = await promiseToFuture<$js.Window?>(
-        $js.chrome.windows.create(createData?.toJS));
-    return $res?.let(Window.fromJS);
+    var $res = await $js.chrome.windows.create(createData?.toJS).toDart;
+    if ($res != null && $res.isA<$js.Window>()) {
+      return Window.fromJS($res as $js.Window);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Updates the properties of a window. Specify only the properties that to be
   /// changed; unspecified properties are unchanged.
-  Future<Window> update(
-    int windowId,
-    UpdateInfo updateInfo,
-  ) async {
-    var $res = await promiseToFuture<$js.Window>($js.chrome.windows.update(
-      windowId,
-      updateInfo.toJS,
-    ));
-    return Window.fromJS($res);
+  Future<Window> update(int windowId, UpdateInfo updateInfo) async {
+    var $res =
+        await $js.chrome.windows.update(windowId, updateInfo.toJS).toDart;
+    if ($res != null && $res.isA<$js.Window>()) {
+      return Window.fromJS($res as $js.Window);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Removes (closes) a window and all the tabs inside it.
   Future<void> remove(int windowId) async {
-    await promiseToFuture<void>($js.chrome.windows.remove(windowId));
+    await $js.chrome.windows.remove(windowId).toDart;
   }
 
   /// The windowId value that represents the absence of a Chrome browser window.
@@ -91,32 +99,38 @@ class ChromeWindows {
   int get windowIdCurrent => $js.chrome.windows.WINDOW_ID_CURRENT;
 
   /// Fired when a window is created.
-  EventStream<Window> get onCreated =>
-      $js.chrome.windows.onCreated.asStream(($c) => ($js.Window window) {
-            return $c(Window.fromJS(window));
-          }.toJS);
+  EventStream<Window> get onCreated => $js.chrome.windows.onCreated.asStream(
+        ($c) => ($js.Window window) {
+          return $c(Window.fromJS(window));
+        }.toJS,
+      );
 
   /// Fired when a window is removed (closed).
-  EventStream<int> get onRemoved =>
-      $js.chrome.windows.onRemoved.asStream(($c) => (int windowId) {
-            return $c(windowId);
-          }.toJS);
+  EventStream<int> get onRemoved => $js.chrome.windows.onRemoved.asStream(
+        ($c) => (int windowId) {
+          return $c(windowId);
+        }.toJS,
+      );
 
   /// Fired when the currently focused window changes. Returns
   /// `chrome.windows.WINDOW_ID_NONE` if all Chrome windows have lost focus.
   /// **Note:** On some Linux window managers, `WINDOW_ID_NONE` is always sent
   /// immediately preceding a switch from one Chrome window to another.
   EventStream<int> get onFocusChanged =>
-      $js.chrome.windows.onFocusChanged.asStream(($c) => (int windowId) {
-            return $c(windowId);
-          }.toJS);
+      $js.chrome.windows.onFocusChanged.asStream(
+        ($c) => (int windowId) {
+          return $c(windowId);
+        }.toJS,
+      );
 
   /// Fired when a window has been resized; this event is only dispatched when
   /// the new bounds are committed, and not for in-progress changes.
   EventStream<Window> get onBoundsChanged =>
-      $js.chrome.windows.onBoundsChanged.asStream(($c) => ($js.Window window) {
-            return $c(Window.fromJS(window));
-          }.toJS);
+      $js.chrome.windows.onBoundsChanged.asStream(
+        ($c) => ($js.Window window) {
+          return $c(Window.fromJS(window));
+        }.toJS,
+      );
 }
 
 /// The type of browser window this is. In some circumstances a window may not
@@ -475,7 +489,8 @@ class CreateData {
             List() => url.toJSArrayString(),
             null => null,
             _ => throw UnsupportedError(
-                'Received type: ${url.runtimeType}. Supported types are: String, List<String>')
+                'Received type: ${url.runtimeType}. Supported types are: String, List<String>',
+              ),
           },
           tabId: tabId,
           left: left,
@@ -508,7 +523,8 @@ class CreateData {
       List() => v.toJSArrayString(),
       null => null,
       _ => throw UnsupportedError(
-          'Received type: ${v.runtimeType}. Supported types are: String, List<String>')
+          'Received type: ${v.runtimeType}. Supported types are: String, List<String>',
+        ),
     };
   }
 

@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'runtime.dart';
 import 'src/internal_helpers.dart';
 import 'src/js/extension.dart' as $js;
@@ -32,15 +31,11 @@ class ChromeExtension {
   /// [extensionId] The extension ID of the extension you want to connect to.
   /// If omitted, default is your own extension.
   @Deprecated(r'Please use $(ref:runtime.sendMessage).')
-  Future<Object> sendRequest(
-    String? extensionId,
-    Object request,
-  ) async {
-    var $res = await promiseToFuture<JSAny>($js.chrome.extension.sendRequest(
-      extensionId,
-      request.jsify()!,
-    ));
-    return $res.dartify()!;
+  Future<Object> sendRequest(String? extensionId, Object request) async {
+    var $res = await $js.chrome.extension
+        .sendRequest(extensionId, request.jsify()!)
+        .toDart;
+    return ($res as JSAny).dartify()!;
   }
 
   /// Converts a relative path within an extension install directory to a
@@ -77,7 +72,8 @@ class ChromeExtension {
   /// only the 'window' objects of tabs attached to the specified window.
   /// [returns] Array of global window objects
   @Deprecated(
-      r'Please use $(ref:extension.getViews) <code>{type: "tab"}</code>.')
+    r'Please use $(ref:extension.getViews) <code>{type: "tab"}</code>.',
+  )
   List<JSObject> getExtensionTabs(int? windowId) {
     return $js.chrome.extension
         .getExtensionTabs(windowId)
@@ -91,18 +87,22 @@ class ChromeExtension {
   /// corresponds to the user-controlled per-extension 'Allowed in Incognito'
   /// setting accessible via the chrome://extensions page.
   Future<bool> isAllowedIncognitoAccess() async {
-    var $res = await promiseToFuture<bool>(
-        $js.chrome.extension.isAllowedIncognitoAccess());
-    return $res;
+    var $res = await $js.chrome.extension.isAllowedIncognitoAccess().toDart;
+    if ($res != null && $res.isA<JSBoolean>()) {
+      return ($res as JSBoolean).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Retrieves the state of the extension's access to the 'file://' scheme.
   /// This corresponds to the user-controlled per-extension 'Allow access to
   /// File URLs' setting accessible via the chrome://extensions page.
   Future<bool> isAllowedFileSchemeAccess() async {
-    var $res = await promiseToFuture<bool>(
-        $js.chrome.extension.isAllowedFileSchemeAccess());
-    return $res;
+    var $res = await $js.chrome.extension.isAllowedFileSchemeAccess().toDart;
+    if ($res != null && $res.isA<JSBoolean>()) {
+      return ($res as JSBoolean).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Sets the value of the ap CGI parameter used in the extension's update URL.
@@ -126,31 +126,39 @@ class ChromeExtension {
   /// Fired when a request is sent from either an extension process or a content
   /// script.
   EventStream<OnRequestEvent> get onRequest =>
-      $js.chrome.extension.onRequest.asStream(($c) => (
-            JSAny? request,
-            $js_runtime.MessageSender sender,
-            JSFunction sendResponse,
-          ) {
-            return $c(OnRequestEvent(
+      $js.chrome.extension.onRequest.asStream(
+        ($c) => (
+          JSAny? request,
+          $js_runtime.MessageSender sender,
+          JSFunction sendResponse,
+        ) {
+          return $c(
+            OnRequestEvent(
               request: request?.dartify(),
               sender: MessageSender.fromJS(sender),
               sendResponse: sendResponse,
-            ));
-          }.toJS);
+            ),
+          );
+        }.toJS,
+      );
 
   /// Fired when a request is sent from another extension.
   EventStream<OnRequestExternalEvent> get onRequestExternal =>
-      $js.chrome.extension.onRequestExternal.asStream(($c) => (
-            JSAny? request,
-            $js_runtime.MessageSender sender,
-            JSFunction sendResponse,
-          ) {
-            return $c(OnRequestExternalEvent(
+      $js.chrome.extension.onRequestExternal.asStream(
+        ($c) => (
+          JSAny? request,
+          $js_runtime.MessageSender sender,
+          JSFunction sendResponse,
+        ) {
+          return $c(
+            OnRequestExternalEvent(
               request: request?.dartify(),
               sender: MessageSender.fromJS(sender),
               sendResponse: sendResponse,
-            ));
-          }.toJS);
+            ),
+          );
+        }.toJS,
+      );
 }
 
 /// The type of extension view.
@@ -220,11 +228,10 @@ class GetViewsFetchProperties {
 class ExtensionLastError {
   ExtensionLastError.fromJS(this._wrapped);
 
-  ExtensionLastError(
-      {
-      /// Description of the error that has taken place.
-      required String message})
-      : _wrapped = $js.ExtensionLastError(message: message);
+  ExtensionLastError({
+    /// Description of the error that has taken place.
+    required String message,
+  }) : _wrapped = $js.ExtensionLastError(message: message);
 
   final $js.ExtensionLastError _wrapped;
 

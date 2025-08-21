@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'src/internal_helpers.dart';
 import 'src/js/alarms.dart' as $js;
 
@@ -47,48 +46,59 @@ class ChromeAlarms {
   /// repeating alarm, [periodInMinutes] is used as the default for
   /// [delayInMinutes].
   /// |callback|: Invoked when the alarm has been created.
-  Future<void> create(
-    String? name,
-    AlarmCreateInfo alarmInfo,
-  ) async {
-    await promiseToFuture<void>($js.chrome.alarms.create(
-      name,
-      alarmInfo.toJS,
-    ));
+  Future<void> create(String? name, AlarmCreateInfo alarmInfo) async {
+    await $js.chrome.alarms.create(name, alarmInfo.toJS).toDart;
   }
 
   /// Retrieves details about the specified alarm.
   /// |name|: The name of the alarm to get. Defaults to the empty string.
   Future<Alarm?> get(String? name) async {
-    var $res = await promiseToFuture<$js.Alarm?>($js.chrome.alarms.get(name));
-    return $res?.let(Alarm.fromJS);
+    var $res = await $js.chrome.alarms.get(name).toDart;
+    if ($res != null && $res.isA<$js.Alarm>()) {
+      return Alarm.fromJS($res as $js.Alarm);
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Gets an array of all the alarms.
   Future<List<Alarm>> getAll() async {
-    var $res = await promiseToFuture<JSArray>($js.chrome.alarms.getAll());
-    return $res.toDart.cast<$js.Alarm>().map((e) => Alarm.fromJS(e)).toList();
+    var $res = await $js.chrome.alarms.getAll().toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.Alarm>()
+          .map((e) => Alarm.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Clears the alarm with the given name.
   /// |name|: The name of the alarm to clear. Defaults to the empty string.
   Future<bool> clear(String? name) async {
-    var $res = await promiseToFuture<bool>($js.chrome.alarms.clear(name));
-    return $res;
+    var $res = await $js.chrome.alarms.clear(name).toDart;
+    if ($res != null && $res.isA<JSBoolean>()) {
+      return ($res as JSBoolean).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Clears all alarms.
   Future<bool> clearAll() async {
-    var $res = await promiseToFuture<bool>($js.chrome.alarms.clearAll());
-    return $res;
+    var $res = await $js.chrome.alarms.clearAll().toDart;
+    if ($res != null && $res.isA<JSBoolean>()) {
+      return ($res as JSBoolean).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Fired when an alarm has elapsed. Useful for event pages.
   /// |alarm|: The alarm that has elapsed.
-  EventStream<Alarm> get onAlarm =>
-      $js.chrome.alarms.onAlarm.asStream(($c) => ($js.Alarm alarm) {
-            return $c(Alarm.fromJS(alarm));
-          }.toJS);
+  EventStream<Alarm> get onAlarm => $js.chrome.alarms.onAlarm.asStream(
+        ($c) => ($js.Alarm alarm) {
+          return $c(Alarm.fromJS(alarm));
+        }.toJS,
+      );
 }
 
 class Alarm {

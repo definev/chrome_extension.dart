@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'src/internal_helpers.dart';
 import 'src/js/downloads.dart' as $js;
 
@@ -35,9 +34,11 @@ class ChromeDownloads {
   /// |options|: What to download and how.
   /// |callback|: Called with the id of the new [DownloadItem].
   Future<int> download(DownloadOptions options) async {
-    var $res =
-        await promiseToFuture<int>($js.chrome.downloads.download(options.toJS));
-    return $res;
+    var $res = await $js.chrome.downloads.download(options.toJS).toDart;
+    if ($res != null && $res.isA<JSNumber>()) {
+      return ($res as JSNumber).toDartInt;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Find [DownloadItem]. Set `query` to the empty object to get
@@ -47,12 +48,15 @@ class ChromeDownloads {
   /// number of items per page, and set `startedAfter` to the
   /// `startTime` of the last item from the last page.
   Future<List<DownloadItem>> search(DownloadQuery query) async {
-    var $res =
-        await promiseToFuture<JSArray>($js.chrome.downloads.search(query.toJS));
-    return $res.toDart
-        .cast<$js.DownloadItem>()
-        .map((e) => DownloadItem.fromJS(e))
-        .toList();
+    var $res = await $js.chrome.downloads.search(query.toJS).toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.DownloadItem>()
+          .map((e) => DownloadItem.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Pause the download. If the request was successful the download is in a
@@ -61,7 +65,7 @@ class ChromeDownloads {
   /// |downloadId|: The id of the download to pause.
   /// |callback|: Called when the pause request is completed.
   Future<void> pause(int downloadId) async {
-    await promiseToFuture<void>($js.chrome.downloads.pause(downloadId));
+    await $js.chrome.downloads.pause(downloadId).toDart;
   }
 
   /// Resume a paused download. If the request was successful the download is
@@ -70,7 +74,7 @@ class ChromeDownloads {
   /// |downloadId|: The id of the download to resume.
   /// |callback|: Called when the resume request is completed.
   Future<void> resume(int downloadId) async {
-    await promiseToFuture<void>($js.chrome.downloads.resume(downloadId));
+    await $js.chrome.downloads.resume(downloadId).toDart;
   }
 
   /// Cancel a download. When `callback` is run, the download is
@@ -78,7 +82,7 @@ class ChromeDownloads {
   /// |downloadId|: The id of the download to cancel.
   /// |callback|: Called when the cancel request is completed.
   Future<void> cancel(int downloadId) async {
-    await promiseToFuture<void>($js.chrome.downloads.cancel(downloadId));
+    await $js.chrome.downloads.cancel(downloadId).toDart;
   }
 
   /// Retrieve an icon for the specified download. For new downloads, file
@@ -96,11 +100,12 @@ class ChromeDownloads {
     int downloadId,
     GetFileIconOptions? options,
   ) async {
-    var $res = await promiseToFuture<String?>($js.chrome.downloads.getFileIcon(
-      downloadId,
-      options?.toJS,
-    ));
-    return $res;
+    var $res = await $js.chrome.downloads
+        .getFileIcon(downloadId, options?.toJS)
+        .toDart;
+    if ($res == null) return null;
+    if ($res.isA<JSString>()) return ($res as JSString).toDart;
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Opens the downloaded file now if the [DownloadItem] is complete;
@@ -130,15 +135,17 @@ class ChromeDownloads {
   /// [DownloadItem] that matches `query`, then
   /// `callback` will be called.
   Future<List<int>> erase(DownloadQuery query) async {
-    var $res =
-        await promiseToFuture<JSArray>($js.chrome.downloads.erase(query.toJS));
-    return $res.toDart.cast<int>().map((e) => e).toList();
+    var $res = await $js.chrome.downloads.erase(query.toJS).toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray).toDart.cast<int>().map((e) => e).toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Remove the downloaded file if it exists and the [DownloadItem] is
   /// complete; otherwise return an error through [runtime.lastError].
   Future<void> removeFile(int downloadId) async {
-    await promiseToFuture<void>($js.chrome.downloads.removeFile(downloadId));
+    await $js.chrome.downloads.removeFile(downloadId).toDart;
   }
 
   /// Prompt the user to accept a dangerous download. Can only be called from a
@@ -152,7 +159,7 @@ class ChromeDownloads {
   /// |downloadId|: The identifier for the [DownloadItem].
   /// |callback|: Called when the danger prompt dialog closes.
   Future<void> acceptDanger(int downloadId) async {
-    await promiseToFuture<void>($js.chrome.downloads.acceptDanger(downloadId));
+    await $js.chrome.downloads.acceptDanger(downloadId).toDart;
   }
 
   /// Enable or disable the gray shelf at the bottom of every window associated
@@ -176,34 +183,38 @@ class ChromeDownloads {
   /// |options|: Encapsulate a change to the download UI.
   /// |callback|: Called when the UI update is completed.
   Future<void> setUiOptions(UiOptions options) async {
-    await promiseToFuture<void>(
-        $js.chrome.downloads.setUiOptions(options.toJS));
+    await $js.chrome.downloads.setUiOptions(options.toJS).toDart;
   }
 
   /// This event fires with the [DownloadItem] object when a download
   /// begins.
-  EventStream<DownloadItem> get onCreated => $js.chrome.downloads.onCreated
-      .asStream(($c) => ($js.DownloadItem downloadItem) {
-            return $c(DownloadItem.fromJS(downloadItem));
-          }.toJS);
+  EventStream<DownloadItem> get onCreated =>
+      $js.chrome.downloads.onCreated.asStream(
+        ($c) => ($js.DownloadItem downloadItem) {
+          return $c(DownloadItem.fromJS(downloadItem));
+        }.toJS,
+      );
 
   /// Fires with the `downloadId` when a download is erased from
   /// history.
   /// |downloadId|: The `id` of the [DownloadItem] that was
   /// erased.
-  EventStream<int> get onErased =>
-      $js.chrome.downloads.onErased.asStream(($c) => (int downloadId) {
-            return $c(downloadId);
-          }.toJS);
+  EventStream<int> get onErased => $js.chrome.downloads.onErased.asStream(
+        ($c) => (int downloadId) {
+          return $c(downloadId);
+        }.toJS,
+      );
 
   /// When any of a [DownloadItem]'s properties except
   /// `bytesReceived` and `estimatedEndTime` changes,
   /// this event fires with the `downloadId` and an object
   /// containing the properties that changed.
-  EventStream<DownloadDelta> get onChanged => $js.chrome.downloads.onChanged
-      .asStream(($c) => ($js.DownloadDelta downloadDelta) {
-            return $c(DownloadDelta.fromJS(downloadDelta));
-          }.toJS);
+  EventStream<DownloadDelta> get onChanged =>
+      $js.chrome.downloads.onChanged.asStream(
+        ($c) => ($js.DownloadDelta downloadDelta) {
+          return $c(DownloadDelta.fromJS(downloadDelta));
+        }.toJS,
+      );
 
   /// During the filename determination process, extensions will be given the
   /// opportunity to override the target [DownloadItem.filename]. Each
@@ -227,17 +238,21 @@ class ChromeDownloads {
   /// tentative filename have been determined, pass `filename` to
   /// [download] instead.
   EventStream<OnDeterminingFilenameEvent> get onDeterminingFilename =>
-      $js.chrome.downloads.onDeterminingFilename.asStream(($c) => (
-            $js.DownloadItem downloadItem,
-            $js.SuggestFilenameCallback suggest,
-          ) {
-            return $c(OnDeterminingFilenameEvent(
+      $js.chrome.downloads.onDeterminingFilename.asStream(
+        ($c) => (
+          $js.DownloadItem downloadItem,
+          $js.SuggestFilenameCallback suggest,
+        ) {
+          return $c(
+            OnDeterminingFilenameEvent(
               downloadItem: DownloadItem.fromJS(downloadItem),
               suggest: (FilenameSuggestion? suggestion) {
                 suggest.callAsFunction(null, suggestion?.toJS);
               },
-            ));
-          }.toJS);
+            ),
+          );
+        }.toJS,
+      );
 }
 
 /// <dl><dt>uniquify</dt>
@@ -410,10 +425,7 @@ class HeaderNameValuePair {
 
     /// Value of the HTTP header.
     required String value,
-  }) : _wrapped = $js.HeaderNameValuePair(
-          name: name,
-          value: value,
-        );
+  }) : _wrapped = $js.HeaderNameValuePair(name: name, value: value);
 
   final $js.HeaderNameValuePair _wrapped;
 
@@ -1264,13 +1276,8 @@ class DownloadQuery {
 class StringDelta {
   StringDelta.fromJS(this._wrapped);
 
-  StringDelta({
-    String? previous,
-    String? current,
-  }) : _wrapped = $js.StringDelta(
-          previous: previous,
-          current: current,
-        );
+  StringDelta({String? previous, String? current})
+      : _wrapped = $js.StringDelta(previous: previous, current: current);
 
   final $js.StringDelta _wrapped;
 
@@ -1292,13 +1299,8 @@ class StringDelta {
 class DoubleDelta {
   DoubleDelta.fromJS(this._wrapped);
 
-  DoubleDelta({
-    double? previous,
-    double? current,
-  }) : _wrapped = $js.DoubleDelta(
-          previous: previous,
-          current: current,
-        );
+  DoubleDelta({double? previous, double? current})
+      : _wrapped = $js.DoubleDelta(previous: previous, current: current);
 
   final $js.DoubleDelta _wrapped;
 
@@ -1320,13 +1322,8 @@ class DoubleDelta {
 class BooleanDelta {
   BooleanDelta.fromJS(this._wrapped);
 
-  BooleanDelta({
-    bool? previous,
-    bool? current,
-  }) : _wrapped = $js.BooleanDelta(
-          previous: previous,
-          current: current,
-        );
+  BooleanDelta({bool? previous, bool? current})
+      : _wrapped = $js.BooleanDelta(previous: previous, current: current);
 
   final $js.BooleanDelta _wrapped;
 
@@ -1526,15 +1523,14 @@ class DownloadDelta {
 class GetFileIconOptions {
   GetFileIconOptions.fromJS(this._wrapped);
 
-  GetFileIconOptions(
-      {
-      /// The size of the returned icon. The icon will be square with dimensions
-      /// size * size pixels. The default and largest size for the icon is 32x32
-      /// pixels. The only supported sizes are 16 and 32. It is an error to
-      /// specify
-      /// any other size.
-      int? size})
-      : _wrapped = $js.GetFileIconOptions(size: size);
+  GetFileIconOptions({
+    /// The size of the returned icon. The icon will be square with dimensions
+    /// size * size pixels. The default and largest size for the icon is 32x32
+    /// pixels. The only supported sizes are 16 and 32. It is an error to
+    /// specify
+    /// any other size.
+    int? size,
+  }) : _wrapped = $js.GetFileIconOptions(size: size);
 
   final $js.GetFileIconOptions _wrapped;
 
@@ -1554,11 +1550,10 @@ class GetFileIconOptions {
 class UiOptions {
   UiOptions.fromJS(this._wrapped);
 
-  UiOptions(
-      {
-      /// Enable or disable the download UI.
-      required bool enabled})
-      : _wrapped = $js.UiOptions(enabled: enabled);
+  UiOptions({
+    /// Enable or disable the download UI.
+    required bool enabled,
+  }) : _wrapped = $js.UiOptions(enabled: enabled);
 
   final $js.UiOptions _wrapped;
 

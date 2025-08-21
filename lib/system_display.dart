@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'src/internal_helpers.dart';
 import 'src/js/system_display.dart' as $js;
 import 'system.dart';
@@ -27,24 +26,30 @@ class ChromeSystemDisplay {
   /// |flags|: Options affecting how the information is returned.
   /// |callback|: The callback to invoke with the results.
   Future<List<DisplayUnitInfo>> getInfo(GetInfoFlags? flags) async {
-    var $res = await promiseToFuture<JSArray>(
-        $js.chrome.system.display.getInfo(flags?.toJS));
-    return $res.toDart
-        .cast<$js.DisplayUnitInfo>()
-        .map((e) => DisplayUnitInfo.fromJS(e))
-        .toList();
+    var $res = await $js.chrome.system.display.getInfo(flags?.toJS).toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.DisplayUnitInfo>()
+          .map((e) => DisplayUnitInfo.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Requests the layout info for all displays.
   /// NOTE: This is only available to Chrome OS Kiosk apps and Web UI.
   /// |callback|: The callback to invoke with the results.
   Future<List<DisplayLayout>> getDisplayLayout() async {
-    var $res = await promiseToFuture<JSArray>(
-        $js.chrome.system.display.getDisplayLayout());
-    return $res.toDart
-        .cast<$js.DisplayLayout>()
-        .map((e) => DisplayLayout.fromJS(e))
-        .toList();
+    var $res = await $js.chrome.system.display.getDisplayLayout().toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.DisplayLayout>()
+          .map((e) => DisplayLayout.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Updates the properties for the display specified by |id|, according to
@@ -58,14 +63,8 @@ class ChromeSystemDisplay {
   /// |callback|: Empty function called when the function finishes. To find out
   ///     whether the function succeeded, [runtime.lastError] should be
   ///     queried.
-  Future<void> setDisplayProperties(
-    String id,
-    DisplayProperties info,
-  ) async {
-    await promiseToFuture<void>($js.chrome.system.display.setDisplayProperties(
-      id,
-      info.toJS,
-    ));
+  Future<void> setDisplayProperties(String id, DisplayProperties info) async {
+    await $js.chrome.system.display.setDisplayProperties(id, info.toJS).toDart;
   }
 
   /// Set the layout for all displays. Any display not included will use the
@@ -79,8 +78,11 @@ class ChromeSystemDisplay {
   ///     whether the function succeeded, [runtime.lastError] should be
   ///     queried.
   Future<void> setDisplayLayout(List<DisplayLayout> layouts) async {
-    await promiseToFuture<void>($js.chrome.system.display
-        .setDisplayLayout(layouts.toJSArray((e) => e.toJS)));
+    await $js.chrome.system.display
+        .setDisplayLayout(
+          layouts.toJSArray((e) => e.toJS),
+        )
+        .toDart;
   }
 
   /// Enables/disables the unified desktop feature. If enabled while mirroring
@@ -106,14 +108,8 @@ class ChromeSystemDisplay {
   /// Each Adjust call is cumulative with previous calls since Start.
   /// |id|: The display's unique identifier.
   /// |delta|: The amount to change the overscan insets.
-  void overscanCalibrationAdjust(
-    String id,
-    Insets delta,
-  ) {
-    $js.chrome.system.display.overscanCalibrationAdjust(
-      id,
-      delta.toJS,
-    );
+  void overscanCalibrationAdjust(String id, Insets delta) {
+    $js.chrome.system.display.overscanCalibrationAdjust(id, delta.toJS);
   }
 
   /// Resets the overscan insets for a display to the last saved value (i.e
@@ -140,9 +136,12 @@ class ChromeSystemDisplay {
   ///      calibration has ended. The argument of the callback informs if the
   ///      calibration was a success or not.
   Future<bool> showNativeTouchCalibration(String id) async {
-    var $res = await promiseToFuture<bool>(
-        $js.chrome.system.display.showNativeTouchCalibration(id));
-    return $res;
+    var $res =
+        await $js.chrome.system.display.showNativeTouchCalibration(id).toDart;
+    if ($res != null && $res.isA<JSBoolean>()) {
+      return ($res as JSBoolean).toDart;
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 
   /// Starts custom touch calibration for a display. This should be called when
@@ -189,15 +188,16 @@ class ChromeSystemDisplay {
   ///     whether the function succeeded, [runtime.lastError] should be
   ///     queried.
   Future<void> setMirrorMode(MirrorModeInfo info) async {
-    await promiseToFuture<void>(
-        $js.chrome.system.display.setMirrorMode(info.toJS));
+    await $js.chrome.system.display.setMirrorMode(info.toJS).toDart;
   }
 
   /// Fired when anything changes to the display configuration.
   EventStream<void> get onDisplayChanged =>
-      $js.chrome.system.display.onDisplayChanged.asStream(($c) => () {
-            return $c(null);
-          }.toJS);
+      $js.chrome.system.display.onDisplayChanged.asStream(
+        ($c) => () {
+          return $c(null);
+        }.toJS,
+      );
 }
 
 /// Layout position, i.e. edge of parent that the display is attached to.
@@ -384,10 +384,7 @@ class Point {
 
     /// The y-coordinate of the point.
     required int y,
-  }) : _wrapped = $js.Point(
-          x: x,
-          y: y,
-        );
+  }) : _wrapped = $js.Point(x: x, y: y);
 
   final $js.Point _wrapped;
 
@@ -833,8 +830,9 @@ class DisplayUnitInfo {
           modes: modes.toJSArray((e) => e.toJS),
           hasTouchSupport: hasTouchSupport,
           hasAccelerometerSupport: hasAccelerometerSupport,
-          availableDisplayZoomFactors:
-              availableDisplayZoomFactors.toJSArray((e) => e),
+          availableDisplayZoomFactors: availableDisplayZoomFactors.toJSArray(
+            (e) => e,
+          ),
           displayZoomFactor: displayZoomFactor,
         );
 
@@ -1196,13 +1194,12 @@ class DisplayProperties {
 class GetInfoFlags {
   GetInfoFlags.fromJS(this._wrapped);
 
-  GetInfoFlags(
-      {
-      /// If set to true, only a single [DisplayUnitInfo] will be returned
-      /// by [getInfo] when in unified desktop mode (see
-      /// [enableUnifiedDesktop]). Defaults to false.
-      bool? singleUnified})
-      : _wrapped = $js.GetInfoFlags(singleUnified: singleUnified);
+  GetInfoFlags({
+    /// If set to true, only a single [DisplayUnitInfo] will be returned
+    /// by [getInfo] when in unified desktop mode (see
+    /// [enableUnifiedDesktop]). Defaults to false.
+    bool? singleUnified,
+  }) : _wrapped = $js.GetInfoFlags(singleUnified: singleUnified);
 
   final $js.GetInfoFlags _wrapped;
 

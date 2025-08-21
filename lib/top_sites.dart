@@ -2,7 +2,6 @@
 
 library;
 
-import 'dart:js_util';
 import 'src/internal_helpers.dart';
 import 'src/js/top_sites.dart' as $js;
 
@@ -24,11 +23,15 @@ class ChromeTopSites {
 
   /// Gets a list of top sites.
   Future<List<MostVisitedURL>> get() async {
-    var $res = await promiseToFuture<JSArray>($js.chrome.topSites.get());
-    return $res.toDart
-        .cast<$js.MostVisitedURL>()
-        .map((e) => MostVisitedURL.fromJS(e))
-        .toList();
+    var $res = await $js.chrome.topSites.get().toDart;
+    if ($res != null && $res.isA<JSArray>()) {
+      return ($res as JSArray)
+          .toDart
+          .cast<$js.MostVisitedURL>()
+          .map((e) => MostVisitedURL.fromJS(e))
+          .toList();
+    }
+    throw UnsupportedError('Received type: ${$res.runtimeType}.');
   }
 }
 
@@ -41,10 +44,7 @@ class MostVisitedURL {
 
     /// The title of the page
     required String title,
-  }) : _wrapped = $js.MostVisitedURL(
-          url: url,
-          title: title,
-        );
+  }) : _wrapped = $js.MostVisitedURL(url: url, title: title);
 
   final $js.MostVisitedURL _wrapped;
 
