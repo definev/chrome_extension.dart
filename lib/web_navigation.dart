@@ -27,7 +27,7 @@ class ChromeWebNavigation {
   /// [details] Information about the frame to retrieve information about.
   Future<GetFrameCallbackDetails?> getFrame(GetFrameDetails details) async {
     var $res = await $js.chrome.webNavigation.getFrame(details.toJS).toDart;
-    if ($res != null && $res.isA<$js.GetFrameCallbackDetails>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return GetFrameCallbackDetails.fromJS(
           $res as $js.GetFrameCallbackDetails);
     }

@@ -42,7 +42,7 @@ class ChromeSystemStorage {
   /// Ejects a removable storage device.
   Future<EjectDeviceResultCode> ejectDevice(String id) async {
     var $res = await $js.chrome.system.storage.ejectDevice(id).toDart;
-    if ($res != null && $res.isA<$js.EjectDeviceResultCode>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return EjectDeviceResultCode.fromJS($res as $js.EjectDeviceResultCode);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -52,7 +52,7 @@ class ChromeSystemStorage {
   /// The |id| is the transient device ID from StorageUnitInfo.
   Future<StorageAvailableCapacityInfo> getAvailableCapacity(String id) async {
     var $res = await $js.chrome.system.storage.getAvailableCapacity(id).toDart;
-    if ($res != null && $res.isA<$js.StorageAvailableCapacityInfo>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return StorageAvailableCapacityInfo.fromJS(
           $res as $js.StorageAvailableCapacityInfo);
     }

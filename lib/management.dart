@@ -40,7 +40,7 @@ class ChromeManagement {
   /// [id] The ID from an item of [management.ExtensionInfo].
   Future<ExtensionInfo> get(String id) async {
     var $res = await $js.chrome.management.get(id).toDart;
-    if ($res != null && $res.isA<$js.ExtensionInfo>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return ExtensionInfo.fromJS($res as $js.ExtensionInfo);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -51,7 +51,7 @@ class ChromeManagement {
   /// manifest.
   Future<ExtensionInfo> getSelf() async {
     var $res = await $js.chrome.management.getSelf().toDart;
-    if ($res != null && $res.isA<$js.ExtensionInfo>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return ExtensionInfo.fromJS($res as $js.ExtensionInfo);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -145,7 +145,7 @@ class ChromeManagement {
   Future<ExtensionInfo> generateAppForLink(String url, String title) async {
     var $res =
         await $js.chrome.management.generateAppForLink(url, title).toDart;
-    if ($res != null && $res.isA<$js.ExtensionInfo>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return ExtensionInfo.fromJS($res as $js.ExtensionInfo);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

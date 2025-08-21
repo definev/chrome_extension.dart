@@ -25,7 +25,7 @@ class ChromeSystemCpu {
   /// Queries basic CPU information of the system.
   Future<CpuInfo> getInfo() async {
     var $res = await $js.chrome.system.cpu.getInfo().toDart;
-    if ($res != null && $res.isA<$js.CpuInfo>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return CpuInfo.fromJS($res as $js.CpuInfo);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

@@ -26,7 +26,7 @@ class ChromeBrowsingData {
   /// one data type listed here.
   Future<SettingsCallbackResult> settings() async {
     final $res = await $js.chrome.browsingData.settings().toDart;
-    if ($res != null && $res.isA<$js.SettingsCallbackResult>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return SettingsCallbackResult.fromJS($res as $js.SettingsCallbackResult);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

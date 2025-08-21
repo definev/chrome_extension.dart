@@ -34,7 +34,7 @@ class ChromeEnterpriseHardwarePlatform {
     var $res = await $js.chrome.enterprise.hardwarePlatform
         .getHardwarePlatformInfo()
         .toDart;
-    if ($res != null && $res.isA<$js.HardwarePlatformInfo>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return HardwarePlatformInfo.fromJS($res as $js.HardwarePlatformInfo);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

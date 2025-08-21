@@ -67,7 +67,7 @@ class ChromeI18n {
   /// [text] User input string to be translated.
   Future<DetectLanguageCallbackResult> detectLanguage(String text) async {
     var $res = await $js.chrome.i18n.detectLanguage(text).toDart;
-    if ($res != null && $res.isA<$js.DetectLanguageCallbackResult>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return DetectLanguageCallbackResult.fromJS(
           $res as $js.DetectLanguageCallbackResult);
     }

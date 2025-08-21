@@ -103,7 +103,7 @@ class ChromeRuntime {
   /// the callback.
   Future<RequestUpdateCheckCallbackResult> requestUpdateCheck() async {
     var $res = await $js.chrome.runtime.requestUpdateCheck().toDart;
-    if ($res != null && $res.isA<$js.RequestUpdateCheckCallbackResult>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return RequestUpdateCheckCallbackResult.fromJS(
           $res as $js.RequestUpdateCheckCallbackResult);
     }
@@ -204,7 +204,7 @@ class ChromeRuntime {
   /// [returns] Called with results
   Future<PlatformInfo> getPlatformInfo() async {
     var $res = await $js.chrome.runtime.getPlatformInfo().toDart;
-    if ($res != null && $res.isA<$js.PlatformInfo>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return PlatformInfo.fromJS($res as $js.PlatformInfo);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

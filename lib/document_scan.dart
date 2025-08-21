@@ -27,7 +27,7 @@ class ChromeDocumentScan {
   /// |callback| : Called with the result and data from the scan.
   Future<ScanResults> scan(ScanOptions options) async {
     var $res = await $js.chrome.documentScan.scan(options.toJS).toDart;
-    if ($res != null && $res.isA<$js.ScanResults>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return ScanResults.fromJS($res as $js.ScanResults);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -40,7 +40,7 @@ class ChromeDocumentScan {
   /// |callback| : Called with the result and list of scanners.
   Future<GetScannerListResponse> getScannerList(DeviceFilter filter) async {
     var $res = await $js.chrome.documentScan.getScannerList(filter.toJS).toDart;
-    if ($res != null && $res.isA<$js.GetScannerListResponse>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return GetScannerListResponse.fromJS($res as $js.GetScannerListResponse);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -53,7 +53,7 @@ class ChromeDocumentScan {
   /// |callback| : Called with the result.
   Future<OpenScannerResponse> openScanner(String scannerId) async {
     var $res = await $js.chrome.documentScan.openScanner(scannerId).toDart;
-    if ($res != null && $res.isA<$js.OpenScannerResponse>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return OpenScannerResponse.fromJS($res as $js.OpenScannerResponse);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -67,7 +67,7 @@ class ChromeDocumentScan {
   Future<GetOptionGroupsResponse> getOptionGroups(String scannerHandle) async {
     var $res =
         await $js.chrome.documentScan.getOptionGroups(scannerHandle).toDart;
-    if ($res != null && $res.isA<$js.GetOptionGroupsResponse>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return GetOptionGroupsResponse.fromJS(
           $res as $js.GetOptionGroupsResponse);
     }
@@ -83,7 +83,7 @@ class ChromeDocumentScan {
   /// |callback| : Called with the result.
   Future<CloseScannerResponse> closeScanner(String scannerHandle) async {
     var $res = await $js.chrome.documentScan.closeScanner(scannerHandle).toDart;
-    if ($res != null && $res.isA<$js.CloseScannerResponse>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return CloseScannerResponse.fromJS($res as $js.CloseScannerResponse);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -109,7 +109,7 @@ class ChromeDocumentScan {
           options.toJSArray((e) => e.toJS),
         )
         .toDart;
-    if ($res != null && $res.isA<$js.SetOptionsResponse>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return SetOptionsResponse.fromJS($res as $js.SetOptionsResponse);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -132,7 +132,7 @@ class ChromeDocumentScan {
     var $res = await $js.chrome.documentScan
         .startScan(scannerHandle, options.toJS)
         .toDart;
-    if ($res != null && $res.isA<$js.StartScanResponse>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return StartScanResponse.fromJS($res as $js.StartScanResponse);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -145,7 +145,7 @@ class ChromeDocumentScan {
   /// |callback| : Called with the result.
   Future<CancelScanResponse> cancelScan(String job) async {
     var $res = await $js.chrome.documentScan.cancelScan(job).toDart;
-    if ($res != null && $res.isA<$js.CancelScanResponse>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return CancelScanResponse.fromJS($res as $js.CancelScanResponse);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -168,7 +168,7 @@ class ChromeDocumentScan {
   /// |callback| : Called with the result.
   Future<ReadScanDataResponse> readScanData(String job) async {
     var $res = await $js.chrome.documentScan.readScanData(job).toDart;
-    if ($res != null && $res.isA<$js.ReadScanDataResponse>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return ReadScanDataResponse.fromJS($res as $js.ReadScanDataResponse);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

@@ -82,7 +82,7 @@ class ChromeSetting {
   /// [details] Which setting to consider.
   Future<GetCallbackDetails> get(GetDetails details) async {
     var $res = await _wrapped.get(details.toJS).toDart;
-    if ($res != null && $res.isA<$js.GetCallbackDetails>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return GetCallbackDetails.fromJS($res as $js.GetCallbackDetails);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

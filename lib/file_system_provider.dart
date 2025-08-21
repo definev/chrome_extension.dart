@@ -66,7 +66,7 @@ class ChromeFileSystemProvider {
   /// `fileSystemId`.
   Future<FileSystemInfo> get(String fileSystemId) async {
     var $res = await $js.chrome.fileSystemProvider.get(fileSystemId).toDart;
-    if ($res != null && $res.isA<$js.FileSystemInfo>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return FileSystemInfo.fromJS($res as $js.FileSystemInfo);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

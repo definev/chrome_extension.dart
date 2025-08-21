@@ -28,7 +28,7 @@ class ChromeIdle {
   Future<IdleState> queryState(int detectionIntervalInSeconds) async {
     var $res =
         await $js.chrome.idle.queryState(detectionIntervalInSeconds).toDart;
-    if ($res != null && $res.isA<$js.IdleState>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return IdleState.fromJS($res as $js.IdleState);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

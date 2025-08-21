@@ -27,7 +27,7 @@ class ChromeFontSettings {
   /// Gets the font for a given script and generic font family.
   Future<GetFontCallbackDetails> getFont(GetFontDetails details) async {
     var $res = await $js.chrome.fontSettings.getFont(details.toJS).toDart;
-    if ($res != null && $res.isA<$js.GetFontCallbackDetails>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return GetFontCallbackDetails.fromJS($res as $js.GetFontCallbackDetails);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -66,7 +66,7 @@ class ChromeFontSettings {
   ) async {
     var $res =
         await $js.chrome.fontSettings.getDefaultFontSize(details?.toJS).toDart;
-    if ($res != null && $res.isA<$js.GetDefaultFontSizeCallbackDetails>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return GetDefaultFontSizeCallbackDetails.fromJS(
           $res as $js.GetDefaultFontSizeCallbackDetails);
     }
@@ -96,8 +96,7 @@ class ChromeFontSettings {
     var $res = await $js.chrome.fontSettings
         .getDefaultFixedFontSize(details?.toJS)
         .toDart;
-    if ($res != null &&
-        $res.isA<$js.GetDefaultFixedFontSizeCallbackDetails>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return GetDefaultFixedFontSizeCallbackDetails.fromJS(
           $res as $js.GetDefaultFixedFontSizeCallbackDetails);
     }
@@ -126,7 +125,7 @@ class ChromeFontSettings {
   ) async {
     var $res =
         await $js.chrome.fontSettings.getMinimumFontSize(details?.toJS).toDart;
-    if ($res != null && $res.isA<$js.GetMinimumFontSizeCallbackDetails>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return GetMinimumFontSizeCallbackDetails.fromJS(
           $res as $js.GetMinimumFontSizeCallbackDetails);
     }

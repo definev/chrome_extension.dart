@@ -25,7 +25,7 @@ class ChromePermissions {
   /// Gets the extension's current set of permissions.
   Future<Permissions> getAll() async {
     var $res = await $js.chrome.permissions.getAll().toDart;
-    if ($res != null && $res.isA<$js.Permissions>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return Permissions.fromJS($res as $js.Permissions);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

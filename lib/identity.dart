@@ -63,7 +63,7 @@ class ChromeIdentity {
   /// corresponding with the returned token.
   Future<GetAuthTokenResult> getAuthToken(TokenDetails? details) async {
     var $res = await $js.chrome.identity.getAuthToken(details?.toJS).toDart;
-    if ($res != null && $res.isA<$js.GetAuthTokenResult>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return GetAuthTokenResult.fromJS($res as $js.GetAuthTokenResult);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -86,7 +86,7 @@ class ChromeIdentity {
   Future<ProfileUserInfo> getProfileUserInfo(ProfileDetails? details) async {
     var $res =
         await $js.chrome.identity.getProfileUserInfo(details?.toJS).toDart;
-    if ($res != null && $res.isA<$js.ProfileUserInfo>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return ProfileUserInfo.fromJS($res as $js.ProfileUserInfo);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

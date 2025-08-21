@@ -25,7 +25,7 @@ class ChromeSystemMemory {
   /// Get physical memory information.
   Future<MemoryInfo> getInfo() async {
     var $res = await $js.chrome.system.memory.getInfo().toDart;
-    if ($res != null && $res.isA<$js.MemoryInfo>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return MemoryInfo.fromJS($res as $js.MemoryInfo);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

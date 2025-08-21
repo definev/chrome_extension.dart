@@ -146,7 +146,7 @@ class ChromeAction {
   /// Returns the user-specified settings relating to an extension's action.
   Future<UserSettings> getUserSettings() async {
     var $res = await $js.chrome.action.getUserSettings().toDart;
-    if ($res != null && $res.isA<$js.UserSettings>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return UserSettings.fromJS($res as $js.UserSettings);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

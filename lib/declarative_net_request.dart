@@ -190,7 +190,7 @@ class ChromeDeclarativeNetRequest {
     var $res = await $js.chrome.declarativeNetRequest
         .getMatchedRules(filter?.toJS)
         .toDart;
-    if ($res != null && $res.isA<$js.RulesMatchedDetails>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return RulesMatchedDetails.fromJS($res as $js.RulesMatchedDetails);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -216,7 +216,7 @@ class ChromeDeclarativeNetRequest {
     var $res = await $js.chrome.declarativeNetRequest
         .isRegexSupported(regexOptions.toJS)
         .toDart;
-    if ($res != null && $res.isA<$js.IsRegexSupportedResult>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return IsRegexSupportedResult.fromJS($res as $js.IsRegexSupportedResult);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -247,7 +247,7 @@ class ChromeDeclarativeNetRequest {
     var $res = await $js.chrome.declarativeNetRequest
         .testMatchOutcome(request.toJS)
         .toDart;
-    if ($res != null && $res.isA<$js.TestMatchOutcomeResult>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return TestMatchOutcomeResult.fromJS($res as $js.TestMatchOutcomeResult);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

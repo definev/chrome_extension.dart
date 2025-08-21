@@ -94,7 +94,7 @@ class ChromeNotifications {
   /// |callback|: Returns the current permission level.
   Future<PermissionLevel> getPermissionLevel() async {
     var $res = await $js.chrome.notifications.getPermissionLevel().toDart;
-    if ($res != null && $res.isA<$js.PermissionLevel>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return PermissionLevel.fromJS($res as $js.PermissionLevel);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

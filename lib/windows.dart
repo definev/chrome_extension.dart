@@ -26,7 +26,7 @@ class ChromeWindows {
   Future<Window> get(int windowId, QueryOptions? queryOptions) async {
     var $res =
         await $js.chrome.windows.get(windowId, queryOptions?.toJS).toDart;
-    if ($res != null && $res.isA<$js.Window>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return Window.fromJS($res as $js.Window);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -35,7 +35,7 @@ class ChromeWindows {
   /// Gets the [current window](#current-window).
   Future<Window> getCurrent(QueryOptions? queryOptions) async {
     var $res = await $js.chrome.windows.getCurrent(queryOptions?.toJS).toDart;
-    if ($res != null && $res.isA<$js.Window>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return Window.fromJS($res as $js.Window);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -46,7 +46,7 @@ class ChromeWindows {
   Future<Window> getLastFocused(QueryOptions? queryOptions) async {
     var $res =
         await $js.chrome.windows.getLastFocused(queryOptions?.toJS).toDart;
-    if ($res != null && $res.isA<$js.Window>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return Window.fromJS($res as $js.Window);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -69,7 +69,7 @@ class ChromeWindows {
   /// or default URL provided.
   Future<Window?> create(CreateData? createData) async {
     var $res = await $js.chrome.windows.create(createData?.toJS).toDart;
-    if ($res != null && $res.isA<$js.Window>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return Window.fromJS($res as $js.Window);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -80,7 +80,7 @@ class ChromeWindows {
   Future<Window> update(int windowId, UpdateInfo updateInfo) async {
     var $res =
         await $js.chrome.windows.update(windowId, updateInfo.toJS).toDart;
-    if ($res != null && $res.isA<$js.Window>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return Window.fromJS($res as $js.Window);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

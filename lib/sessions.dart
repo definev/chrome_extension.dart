@@ -55,7 +55,7 @@ class ChromeSessions {
   /// session is restored.
   Future<Session> restore(String? sessionId) async {
     var $res = await $js.chrome.sessions.restore(sessionId).toDart;
-    if ($res != null && $res.isA<$js.Session>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return Session.fromJS($res as $js.Session);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

@@ -33,7 +33,7 @@ class ChromeCertificateProvider {
   Future<PinResponseDetails?> requestPin(RequestPinDetails details) async {
     var $res =
         await $js.chrome.certificateProvider.requestPin(details.toJS).toDart;
-    if ($res != null && $res.isA<$js.PinResponseDetails>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return PinResponseDetails.fromJS($res as $js.PinResponseDetails);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

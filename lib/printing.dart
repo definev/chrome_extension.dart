@@ -29,7 +29,7 @@ class ChromePrinting {
   /// Before Chrome 120, this function did not return a promise.
   Future<SubmitJobResponse> submitJob(SubmitJobRequest request) async {
     var $res = await $js.chrome.printing.submitJob(request.toJS).toDart;
-    if ($res != null && $res.isA<$js.SubmitJobResponse>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return SubmitJobResponse.fromJS($res as $js.SubmitJobResponse);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -63,7 +63,7 @@ class ChromePrinting {
   /// installed.
   Future<GetPrinterInfoResponse> getPrinterInfo(String printerId) async {
     var $res = await $js.chrome.printing.getPrinterInfo(printerId).toDart;
-    if ($res != null && $res.isA<$js.GetPrinterInfoResponse>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return GetPrinterInfoResponse.fromJS($res as $js.GetPrinterInfoResponse);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

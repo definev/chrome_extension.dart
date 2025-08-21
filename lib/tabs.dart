@@ -27,7 +27,7 @@ class ChromeTabs {
   /// Retrieves details about the specified tab.
   Future<Tab> get(int tabId) async {
     var $res = await $js.chrome.tabs.get(tabId).toDart;
-    if ($res != null && $res.isA<$js.Tab>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return Tab.fromJS($res as $js.Tab);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -38,7 +38,7 @@ class ChromeTabs {
   /// view).
   Future<Tab?> getCurrent() async {
     var $res = await $js.chrome.tabs.getCurrent().toDart;
-    if ($res != null && $res.isA<$js.Tab>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return Tab.fromJS($res as $js.Tab);
     }
     return null;
@@ -88,7 +88,7 @@ class ChromeTabs {
   @Deprecated(r'Please use $(ref:tabs.query) <code>{active: true}</code>.')
   Future<Tab> getSelected(int? windowId) async {
     var $res = await $js.chrome.tabs.getSelected(windowId).toDart;
-    if ($res != null && $res.isA<$js.Tab>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return Tab.fromJS($res as $js.Tab);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -114,7 +114,7 @@ class ChromeTabs {
   /// Creates a new tab.
   Future<Tab> create(CreateProperties createProperties) async {
     var $res = await $js.chrome.tabs.create(createProperties.toJS).toDart;
-    if ($res != null && $res.isA<$js.Tab>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return Tab.fromJS($res as $js.Tab);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -124,7 +124,7 @@ class ChromeTabs {
   /// [tabId] The ID of the tab to duplicate.
   Future<Tab?> duplicate(int tabId) async {
     var $res = await $js.chrome.tabs.duplicate(tabId).toDart;
-    if ($res != null && $res.isA<$js.Tab>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return Tab.fromJS($res as $js.Tab);
     }
     return null;
@@ -148,7 +148,7 @@ class ChromeTabs {
   /// to do nothing if the specified tab is currently active.
   Future<Window> highlight(HighlightInfo highlightInfo) async {
     var $res = await $js.chrome.tabs.highlight(highlightInfo.toJS).toDart;
-    if ($res != null && $res.isA<$js_windows.Window>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return Window.fromJS($res as $js_windows.Window);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -161,7 +161,7 @@ class ChromeTabs {
   Future<Tab?> update(int? tabId, UpdateProperties updateProperties) async {
     var $res =
         await $js.chrome.tabs.update(tabId, updateProperties.toJS).toDart;
-    if ($res != null && $res.isA<$js.Tab>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return Tab.fromJS($res as $js.Tab);
     }
     return null;
@@ -185,7 +185,7 @@ class ChromeTabs {
                 moveProperties.toJS),
             moveProperties.toJS)
         .toDart;
-    if ($res != null && $res.isA<$js.Tab>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return Tab.fromJS(($res as $js.Tab));
     }
     if ($res != null && $res.isA<JSArray>()) {
@@ -363,7 +363,7 @@ class ChromeTabs {
   /// [returns] Called with the tab's current zoom settings.
   Future<ZoomSettings> getZoomSettings(int? tabId) async {
     var $res = await $js.chrome.tabs.getZoomSettings(tabId).toDart;
-    if ($res != null && $res.isA<$js.ZoomSettings>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return ZoomSettings.fromJS($res as $js.ZoomSettings);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -378,7 +378,7 @@ class ChromeTabs {
   /// [returns] Called after the operation is completed.
   Future<Tab?> discard(int? tabId) async {
     var $res = await $js.chrome.tabs.discard(tabId).toDart;
-    if ($res != null && $res.isA<$js.Tab>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return Tab.fromJS($res as $js.Tab);
     }
     return null;

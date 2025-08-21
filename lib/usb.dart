@@ -98,7 +98,7 @@ class ChromeUsb {
   /// |device|: The [Device] to open.
   Future<ConnectionHandle> openDevice(Device device) async {
     var $res = await $js.chrome.usb.openDevice(device.toJS).toDart;
-    if ($res != null && $res.isA<$js.ConnectionHandle>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return ConnectionHandle.fromJS($res as $js.ConnectionHandle);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -156,7 +156,7 @@ class ChromeUsb {
   /// |handle|: An open connection to the device.
   Future<ConfigDescriptor> getConfiguration(ConnectionHandle handle) async {
     var $res = await $js.chrome.usb.getConfiguration(handle.toJS).toDart;
-    if ($res != null && $res.isA<$js.ConfigDescriptor>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return ConfigDescriptor.fromJS($res as $js.ConfigDescriptor);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -239,7 +239,7 @@ class ChromeUsb {
     var $res = await $js.chrome.usb
         .controlTransfer(handle.toJS, transferInfo.toJS)
         .toDart;
-    if ($res != null && $res.isA<$js.TransferResultInfo>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return TransferResultInfo.fromJS($res as $js.TransferResultInfo);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -255,7 +255,7 @@ class ChromeUsb {
     var $res = await $js.chrome.usb
         .bulkTransfer(handle.toJS, transferInfo.toJS)
         .toDart;
-    if ($res != null && $res.isA<$js.TransferResultInfo>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return TransferResultInfo.fromJS($res as $js.TransferResultInfo);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -271,7 +271,7 @@ class ChromeUsb {
     var $res = await $js.chrome.usb
         .interruptTransfer(handle.toJS, transferInfo.toJS)
         .toDart;
-    if ($res != null && $res.isA<$js.TransferResultInfo>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return TransferResultInfo.fromJS($res as $js.TransferResultInfo);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -286,7 +286,7 @@ class ChromeUsb {
     var $res = await $js.chrome.usb
         .isochronousTransfer(handle.toJS, transferInfo.toJS)
         .toDart;
-    if ($res != null && $res.isA<$js.TransferResultInfo>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return TransferResultInfo.fromJS($res as $js.TransferResultInfo);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

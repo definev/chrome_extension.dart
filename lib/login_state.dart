@@ -23,7 +23,7 @@ class ChromeLoginState {
   /// Gets the type of the profile the extension is in.
   Future<ProfileType> getProfileType() async {
     var $res = await $js.chrome.loginState.getProfileType().toDart;
-    if ($res != null && $res.isA<$js.ProfileType>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return ProfileType.fromJS($res as $js.ProfileType);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -32,7 +32,7 @@ class ChromeLoginState {
   /// Gets the current session state.
   Future<SessionState> getSessionState() async {
     var $res = await $js.chrome.loginState.getSessionState().toDart;
-    if ($res != null && $res.isA<$js.SessionState>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return SessionState.fromJS($res as $js.SessionState);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

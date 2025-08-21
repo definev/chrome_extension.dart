@@ -26,7 +26,7 @@ class ChromeCookies {
   /// earliest creation time will be returned.
   Future<Cookie?> get(CookieDetails details) async {
     var $res = await $js.chrome.cookies.get(details.toJS).toDart;
-    if ($res != null && $res.isA<$js.Cookie>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return Cookie.fromJS($res as $js.Cookie);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -55,7 +55,7 @@ class ChromeCookies {
   /// [details] Details about the cookie being set.
   Future<Cookie?> set(SetDetails details) async {
     var $res = await $js.chrome.cookies.set(details.toJS).toDart;
-    if ($res != null && $res.isA<$js.Cookie>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return Cookie.fromJS($res as $js.Cookie);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -64,7 +64,7 @@ class ChromeCookies {
   /// Deletes a cookie by name.
   Future<RemoveCallbackDetails?> remove(CookieDetails details) async {
     var $res = await $js.chrome.cookies.remove(details.toJS).toDart;
-    if ($res != null && $res.isA<$js.RemoveCallbackDetails>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return RemoveCallbackDetails.fromJS($res as $js.RemoveCallbackDetails);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

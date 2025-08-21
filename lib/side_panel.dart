@@ -32,7 +32,7 @@ class ChromeSidePanel {
   /// |callback|: Called with the active panel configuration.
   Future<PanelOptions> getOptions(GetPanelOptions options) async {
     var $res = await $js.chrome.sidePanel.getOptions(options.toJS).toDart;
-    if ($res != null && $res.isA<$js.PanelOptions>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return PanelOptions.fromJS($res as $js.PanelOptions);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -50,7 +50,7 @@ class ChromeSidePanel {
   /// |callback|: Called with the extension's side panel behavior.
   Future<PanelBehavior> getPanelBehavior() async {
     var $res = await $js.chrome.sidePanel.getPanelBehavior().toDart;
-    if ($res != null && $res.isA<$js.PanelBehavior>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return PanelBehavior.fromJS($res as $js.PanelBehavior);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

@@ -25,7 +25,7 @@ class ChromeTabGroups {
   /// Retrieves details about the specified group.
   Future<TabGroup> get(int groupId) async {
     var $res = await $js.chrome.tabGroups.get(groupId).toDart;
-    if ($res != null && $res.isA<$js.TabGroup>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return TabGroup.fromJS($res as $js.TabGroup);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -55,7 +55,7 @@ class ChromeTabGroups {
     var $res = await $js.chrome.tabGroups
         .update(groupId, updateProperties.toJS)
         .toDart;
-    if ($res != null && $res.isA<$js.TabGroup>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return TabGroup.fromJS($res as $js.TabGroup);
     }
     return null;
@@ -66,7 +66,7 @@ class ChromeTabGroups {
   Future<TabGroup?> move(int groupId, MoveProperties moveProperties) async {
     var $res =
         await $js.chrome.tabGroups.move(groupId, moveProperties.toJS).toDart;
-    if ($res != null && $res.isA<$js.TabGroup>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return TabGroup.fromJS($res as $js.TabGroup);
     }
     return null;

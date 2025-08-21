@@ -54,7 +54,7 @@ class ChromeAlarms {
   /// |name|: The name of the alarm to get. Defaults to the empty string.
   Future<Alarm?> get(String? name) async {
     var $res = await $js.chrome.alarms.get(name).toDart;
-    if ($res != null && $res.isA<$js.Alarm>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return Alarm.fromJS($res as $js.Alarm);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

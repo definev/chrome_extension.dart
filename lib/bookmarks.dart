@@ -129,7 +129,7 @@ class ChromeBookmarks {
   /// or missing, it will be a folder.
   Future<BookmarkTreeNode> create(CreateDetails bookmark) async {
     var $res = await $js.chrome.bookmarks.create(bookmark.toJS).toDart;
-    if ($res != null && $res.isA<$js.BookmarkTreeNode>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return BookmarkTreeNode.fromJS($res as $js.BookmarkTreeNode);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -138,7 +138,7 @@ class ChromeBookmarks {
   /// Moves the specified BookmarkTreeNode to the provided location.
   Future<BookmarkTreeNode> move(String id, MoveDestination destination) async {
     var $res = await $js.chrome.bookmarks.move(id, destination.toJS).toDart;
-    if ($res != null && $res.isA<$js.BookmarkTreeNode>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return BookmarkTreeNode.fromJS($res as $js.BookmarkTreeNode);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
@@ -149,7 +149,7 @@ class ChromeBookmarks {
   /// unchanged.  **Note:** Currently, only 'title' and 'url' are supported.
   Future<BookmarkTreeNode> update(String id, UpdateChanges changes) async {
     var $res = await $js.chrome.bookmarks.update(id, changes.toJS).toDart;
-    if ($res != null && $res.isA<$js.BookmarkTreeNode>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return BookmarkTreeNode.fromJS($res as $js.BookmarkTreeNode);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');

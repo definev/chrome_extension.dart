@@ -38,7 +38,7 @@ class ChromeEnterpriseNetworkingAttributes {
     var $res = await $js.chrome.enterprise.networkingAttributes
         .getNetworkDetails()
         .toDart;
-    if ($res != null && $res.isA<$js.NetworkDetails>()) {
+    if ($res != null && $res.isA<JSObject>()) {
       return NetworkDetails.fromJS($res as $js.NetworkDetails);
     }
     throw UnsupportedError('Received type: ${$res.runtimeType}.');
